@@ -1,0 +1,7 @@
+<h1><%=@article.title%></h1>
+
+<p><%=@article.body%></p>
+<%= Time.now %>
+
+<p><%= link_to "Назад", "/articles"%></p>
+<p><%= link_to "Update", edit_article_path(@article) %></p>

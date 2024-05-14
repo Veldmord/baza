@@ -1,0 +1,25 @@
+<div class = "container-sm">
+    <h2>Регулируемый рынок ФЗ 44, сводная</h2>
+    <table class = "table table-sm">
+        <thead>
+            <tr>
+                <th>ОКПД 2</th>
+                <th>Количество ОП</th>
+                <th>Количество ИП</th>
+                <th>Стоимость ОП</th>
+                <th>Стоимость ИП</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @fz44s.each do |row| %>
+            <tr>
+                <td><%= row['okpd'] %></td>
+                <td><%= row['quantity_count_OP'] %></td>
+                <td><%= row['quantity_count_IP'] %></td>
+                <td><%= row['position_count_OP'] %></td>
+                <td><%= row['position_count_IP'] %></td>
+            </tr>
+            <% end %>
+        </tbody>
+    </table>
+</div>

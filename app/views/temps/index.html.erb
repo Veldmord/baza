@@ -1,0 +1,28 @@
+<h2>Сводная таблица по годам и кварталам</h2>
+<table class = "table">
+  <thead>
+    <tr>
+      <% @temps.columns.each do |column| %>
+        <th>
+          <% if params[:sort] == column.name && params[:direction] == 'asc'  %>
+            <%= link_to "#{column.name.titleize} ↓", {sort: column.name, direction: 'desc'}%>
+          <%else%>
+            <%= link_to "#{column.name.titleize} ↑", {sort: column.name, direction: 'asc'} %>
+          <%end%>
+        </th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% @temps.all.each do |record| %>
+      <tr>
+        <% @temps.columns.each do |column| %>
+          <td><%= record[column.name] %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<div calss = "mx-3 container">
+    <%= paginate @temps %>
+</div>

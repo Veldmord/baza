@@ -1,0 +1,2 @@
+class Prom < ApplicationRecord
+end

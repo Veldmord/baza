@@ -1,0 +1,92 @@
+<div id="chart_div" style="width: 900px; height: 500px;"></div>
+
+<script>
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function loadData() {
+        $.ajax({
+            type: 'GET',
+            url: '/temps/all_graph',
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function(response) {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Okpd');
+            data.addColumn('number', 'ip_cost');
+
+            $.each(response, function(index, value) {
+            data.addRow([value.okpd, value.ip_cost]);
+            });
+
+            var options = {
+            title: 'График',
+            curveType: 'function',
+            legend: { position: 'bottom' }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+            }
+        });
+    }
+    function drawChart() {
+    // Загружаем данные при загрузке страницы
+    loadData();
+  }
+
+  // Обрабатываем отправку формы
+    $('#filter_form').submit(function(event) {
+        event.preventDefault();
+        loadData();
+    });
+  
+</script>
+
+<%= render "temps/all_graphs" %>
+
+<script>
+  function createChart(data) {
+    var chartDiv = document.createElement('div');
+    $('#chart_div').append(chartDiv);
+
+    var chartData = new google.visualization.DataTable();
+    chartData.addColumn('string', 'Okpd');
+    chartData.addColumn('number', 'ip_cost');
+    chartData.addColumn('number', 'op_cost');
+
+    chartData.addRow([data.okpd, data.ip_cost, data.op_cost]);
+
+    var options = {
+      title: 'ОКПД 2 - ' + data.okpd,
+      curveType: 'function',
+      legend: { position: 'bottom' }
+    };
+
+    var chart = new google.visualization.BarChart(chartDiv);
+    chart.draw(chartData, options);
+    var infoDiv = document.createElement('div');
+    infoDiv.innerHTML = `
+      <h4>Дополнительная информация</h4>
+      <ul>
+        <li>OKPD: ${data.okpd}</li>
+        <li>IP Cost: ${data.ip_cost}</li>
+        <!-- Add more data points as needed -->
+        <li>Quarter: ${data.sum_cost}</li>
+        <li>Year: ${data.sum_quantity}</li>
+      </ul>
+    `;
+    $('#info_div').append(infoDiv); 
+  }
+
+  function drawChart() {
+    // Загружаем данные при загрузке страницы
+    loadData();
+  }
+
+  // Обрабатываем отправку формы
+  $('#filter_form_graph').submit(function(event) {
+    event.preventDefault();
+    loadData();
+  });
+</script>

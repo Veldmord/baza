@@ -1,0 +1,21 @@
+
+<h1>Регистрация нового пользователя</h1>
+
+<div class = "container">
+  
+  <div>
+    <%= form_with model: @users do |form| %>
+    <p><%= form.label :name, "Your name" %></p>
+    <p><%= form.text_field :name, class: "form-text-field" %></p>
+
+    <p><%= form.label :nickname, "Your nickname" %></p>
+    <p><%= form.text_field :nickname, class: "form-text-field" %></p>
+
+
+    <p><%= form.label :email, "email" %></p>
+    <p><%= form.text_field :email, class: "form-text-field" %></p>
+
+    <p><%= form.submit "Зарегистрироваться"%></p>
+    <%end%>
+  </div>
+</div>  

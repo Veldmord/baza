@@ -1,0 +1,72 @@
+<h1>Users#create</h1>
+<p>Find me in app/views/users/create.html.erb</p>
+
+monthly_quarters = ["2022", "1/2023", "2/2023", "3/2023", "4/2023"]
+okpds = Listokpd.all.pluck(:okpd_9)
+monthly_quarters.each do |monthly_quarter|
+  okpds.each do |okpd|
+    # Create a new temp record or update an existing one
+    temp = Temp.find_or_create_by!(monthly_quarter: monthly_quarter, okpd: okpd)
+
+    # Calculate op_cost, ip_cost, sum_cost, op_quantity, ip_quantity, and sum_quantity
+    op_cost = 0
+    ip_cost = 0
+    op_quantity = 0
+    ip_quantity = 0
+
+    Fz223.where(monthly_quarter: monthly_quarter, okpd: okpd).each do |fz223|
+      if fz223.OP_IP == "ОП"
+        op_cost += fz223.Position_Amount
+        op_quantity += fz223.Quantity
+      elsif fz223.OP_IP == "ИП"
+        ip_cost += fz223.Position_Amount
+        ip_quantity += fz223.Quantity
+      end
+    end
+
+    Fz44.where(monthly_quarter: monthly_quarter, okpd: okpd).each do |fz44|
+      if fz44.OP_IP == "ОП"
+        op_cost += fz44.Position_Amount
+        op_quantity += fz44.Quantity
+      elsif fz44.OP_IP == "ИП"
+        ip_cost += fz44.Position_Amount
+        ip_quantity += fz44.Quantity
+      end
+    end
+
+    temp.op_cost = op_cost
+    temp.ip_cost = ip_cost
+    temp.sum_cost = op_cost + ip_cost
+    temp.op_quantity = op_quantity
+    temp.ip_quantity = ip_quantity
+    temp.sum_quantity = op_quantity + ip_quantity
+
+    # Calculate export_cost, export_quantity, import_cost, and import_quantity
+    export_cost = 0
+    export_quantity = 0
+    import_cost = 0
+    import_quantity = 0
+
+    Customs.where(monthly_quarter: monthly_quarter, okpd: okpd).each do |customs|
+      if customs.export_import == "ЭК"
+        export_cost += customs.RUB
+        export_quantity += customs.quantity
+      elsif customs.export_import == "ИМ"
+        import_cost += customs.RUB
+        import_quantity += customs.quantity
+      end
+    end
+
+    temp.export_cost = export_cost
+    temp.export_quantity = export_quantity
+    temp.import_cost = import_cost
+    temp.import_quantity = import_quantity
+
+    # Calculate prom_cost and prom_quantity
+    prom = Prom.where(monthly_quarter: monthly_quarter, okpd: okpd).first
+    temp.prom_cost = prom&.cost || 0
+    temp.prom_quantity = prom&.quantity || 0
+
+    temp.save!
+  end
+end

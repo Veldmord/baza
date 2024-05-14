@@ -1,0 +1,31 @@
+<div class = "container-sm">
+    <h2>Регулируемый рынок ФЗ 223, сводная</h2>
+    <% @count_files.each do |file|%>
+        <ul>
+            <li><%= file['file_name'] %></li>
+            <%= link_to "Удалить",  url_for(controller: 'fz223s', action: 'destroy', file_name: file['file_name']), method: :delete, data: {confirm: "Are you shure"}, class: "link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"%>
+        </ul>
+    <%end%>
+    <table class = "table table-sm">
+        <thead>
+            <tr>
+                <th>ОКПД 2</th>
+                <th>Количество ОП</th>
+                <th>Количество ИП</th>
+                <th>Стоимость ОП</th>
+                <th>Стоимость ИП</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @fz223s.each do |row| %>
+            <tr>
+                <td><%= row['okpd'] %></td>
+                <td><%= row['quantity_count_OP'] %></td>
+                <td><%= row['quantity_count_IP'] %></td>
+                <td><%= row['position_count_OP'] %></td>
+                <td><%= row['position_count_IP'] %></td>
+            </tr>
+            <% end %>
+        </tbody>
+    </table>
+</div>

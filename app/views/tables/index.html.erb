@@ -1,0 +1,31 @@
+<h2>Список таблиц загруженных в БД</h2>
+<table class = "table">
+    <thead>
+        <tr>
+            <th>Наименование таблицы</th>
+            <th>Количество записей</th>
+            <th>О таблице</th>
+            <th>Ссылка на таблицу</th>
+            <th>Дата создания</th>
+            <th>Дата изменения</th>
+            <th>Изменить/Удалить</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @tables.each do |table| %>
+        <tr>
+            <td><%= link_to table.table_name, table.link  %></td>
+            <td><%= table.count_records %></td>
+            <td><%= table.about %></td>
+            <td><%= table.link %></td>
+            <td><%= table.created_at %></td>
+            <td><%= table.updated_at %></td>
+            <td>
+                <%= link_to "Изменить", edit_table_path(table)%>
+                <%= link_to "Удалить",  table_path(table), method: :delete, data: {confirm: "Are you shure"}, class: "link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"%>
+            </td>
+        </tr>
+        <%end %>
+    </tbody>
+</table>
+<%= link_to "Создать новую таблицу", new_table_path %>

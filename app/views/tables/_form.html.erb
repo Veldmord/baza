@@ -1,0 +1,28 @@
+<%= form_with model: @table do |form|%>
+<div class = "container">
+    <div>
+        <%= form.label :table_name %><br>
+        <%= form.text_field :table_name %>
+        <% @table.errors.full_messages_for(:table_name).each do |massage|%>
+            <div><%= massage%></div>
+        <%end%>
+    </div>
+    <div>
+        <%= form.label :link %><br>
+        <%= form.text_field :link %>
+        <%@table.errors.full_messages_for(:link).each do |massage|%>
+            <div><%= massage%></div>
+        <%end%>
+    </div>
+    <div>
+        <%= form.label :about %><br>
+        <%= form.text_area :about %>
+        <%@table.errors.full_messages_for(:about).each do |massage|%>
+            <div><%= massage%></div>
+        <%end%>
+    </div>
+    <div>
+        <%= form.submit%>
+    </div>
+</div>
+<%end%>

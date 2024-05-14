@@ -1,0 +1,14 @@
+<!-- Ваш файл edit.html.erb -->
+<h2>Редактировать запись</h2>
+
+<%= form_for @listokpd do |f| %>
+  <% @listokpd.attributes.each do |name, value| %>
+    <div class="field">
+      <%= f.label name %>
+      <%= f.text_field name, value: value %>
+    </div>
+  <% end %>
+  <%= f.submit 'Обновить' %>
+<% end %>
+
+<%= link_to 'Назад', listokpds_path %>

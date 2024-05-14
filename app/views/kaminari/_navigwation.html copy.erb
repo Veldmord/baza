@@ -1,0 +1,45 @@
+<div class = "nYnF8">
+<nav class="navbar navbar-expand-lg bg-body-tertiary navbar-fixed-top"> 
+  <div class="container-fluid">
+    <%= link_to "Главная", root_path, class: "navbar-brand" %>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+          <%= link_to "Аналитика", root_path, class: "nav-link dropdown-toggle", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false" %>
+          <ul class="dropdown-menu">
+            <li><%= link_to "Поиск аналогов", root_path, class: "dropdown-item" %></li>
+            <li><%= link_to "Макро данные", root_path, class: "dropdown-item" %></li>
+            <li><%= link_to "ЭКБ и применяемость", root_path, class: "dropdown-item" %></li>
+            <li><%= link_to "Степень кричтичности", root_path, class: "dropdown-item" %></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <%= link_to "Отчет", root_path, class: "nav-link dropdown-toggle", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false" %>
+          <ul class="dropdown-menu">
+            <li><%= link_to "Полнота БД", root_path, class: "dropdown-item" %></li>
+            <li><%= link_to "Отделы", root_path, class: "dropdown-item" %></li>
+            <li><%= link_to "Статистика", root_path, class: "dropdown-item" %></li>
+            <li><%= link_to "Бытовая техника", root_path, class: "dropdown-item" %></li>
+            <li><%= link_to "Беспилотники", root_path, class: "dropdown-item" %></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Таблицы", tables_path, class: "nav-link", role: "button", "aria-expanded": "false" %>
+        </li>
+        <li class="nav-item dropdown">
+          <%= link_to "1135?", root_path, class: "nav-link dropdown-toggle", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false" %>
+          <ul class="dropdown-menu">
+            <li><%= link_to "Отчет", root_path, class: "dropdown-item" %></li>
+            <li><%= link_to "Исполнители", root_path, class: "dropdown-item" %></li>
+            <li><%= link_to "Просроченные", root_path, class: "dropdown-item" %></li>
+            <li><%= link_to "Дополнительно", root_path, class: "dropdown-item" %></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+</div>

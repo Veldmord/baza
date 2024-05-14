@@ -1,0 +1,21 @@
+<table class = "table">
+  <thead>
+    <tr>
+      <% table.columns.each do |column| %>
+        <th><%= column.name.titleize %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% table.all.each do |record| %>
+      <tr>
+        <% table.columns.each do |column| %>
+          <td><%= record[column.name] %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<div calss = "mx-3 container">
+    <%= paginate @table %>
+</div>

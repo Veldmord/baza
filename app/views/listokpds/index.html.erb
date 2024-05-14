@@ -1,0 +1,51 @@
+<!-- Ваш файл listokpds.html.erb -->
+<h2>Полный перечень ОКПД 2</h2>
+<div>
+    <%= form_tag upload_listokpds_path, multipart: true do %>
+        <%= file_field_tag :file %>
+        <%= submit_tag "Загрузить" %>
+    <% end %>
+</div>
+<div class="container">
+    <%= link_to "Temp", "fz223s/temp_table" %>
+</div>
+<%= form_tag listokpds_path, method: :get, remote: true, id: "filter_form" do %>
+  <div class="mb-3">
+    <% @listokpds.columns.each do |column| %>
+      <%= label_tag column.name, column.name.titleize %>
+      <%= text_field_tag "filters[#{column.name}]", params.dig(:filters, column.name), class: "form-control filter-field", placeholder: "Введите значение..." %>
+    <% end %>
+  </div>
+  <%= submit_tag "Поиск", class: "btn btn-primary" %>
+<% end %>
+<div id="listokpds_table">
+  <%= render "listokpds_table" %>
+</div>
+<div class="mx-3 container">
+    <%= paginate @listokpds %>
+</div>
+
+<script>
+$(document).on('turbolinks:load', function() {
+    $('#filter_form').on('submit', function(event) {
+      event.preventDefault(); // Предотвращаем отправку формы по умолчанию
+  
+      var formData = $(this).serialize(); // Получаем данные формы в виде строки
+      console.log("начали");
+      $.ajax({
+        url: $(this).attr('action'), // URL, указанный в атрибуте 'action' формы
+        method: $(this).attr('get'), // Метод, указанный в атрибуте 'method' формы
+        data: formData, // Данные формы
+        dataType: 'script', // Ожидаемый тип данных - JavaScript код
+        success: function(response) {
+          // Обновляем содержимое таблицы
+          console.log("Обновление");
+          $('#listokpds_table').html(response);
+        },
+        error: function(xhr, status, error) {
+          console.error(error); // Выводим ошибку в консоль
+        }
+      });
+    });
+  });
+</script>

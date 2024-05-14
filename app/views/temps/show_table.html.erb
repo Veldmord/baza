@@ -1,0 +1,17 @@
+<h1>Temps</h1> <!-- нужно сформировать общий отчет по 6 коду, мб сделать отдельную таблицу под это -->
+<div id = "filter_form">
+<div class = "mb-3">
+<%= form_tag(show_table_temps_path, remote: true, id: "filter_form1") do %>
+  <%= text_field_tag :okpd, params[:okpd], placeholder: 'ОКПД', id: "okpd" %>
+  <%= select_tag :monthly_quarter, options_for_select(Temp.pluck(:monthly_quarter).uniq),
+                  selected: params[:monthly_quarter] || "4/2023",
+                  placeholder: "Кватал и год"%>
+  <%= submit_tag 'Фильтр' %>
+<% end %>
+</div>
+
+<div id = "results">
+  <%= render "temps/results" %>
+</div>
+</div>
+

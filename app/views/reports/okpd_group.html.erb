@@ -1,0 +1,23 @@
+<h2>Рег рынок</h2>
+<table class ="table">
+  <thead>
+    <tr>
+      <th>ОКПД 2 (9)</th>
+      <th>Цена</th>
+      <th>Количество</th>
+      <th>Экспорт</th>
+      <th>Импорт</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @okpd_group.each do |row| %>
+      <tr>
+        <td><%= row['okpd_9'] %></td>
+        <td><%= row['price'] %></td>
+        <td><%= row['count'] %></td>
+        <td><%= row['export_usd'] %></td>
+        <td><%= row['import_usd'] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

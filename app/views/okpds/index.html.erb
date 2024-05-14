@@ -1,0 +1,41 @@
+<h1>Таблица свзяи окпд и ТНВД</h1>
+
+<div>
+    <%= form_tag ("okpd/upload"), multipart: true do %>
+        <%= file_field_tag :file %>
+        <%= submit_tag "Load" %>
+    <%end%>
+</div>
+
+<table class = "table table-hover table-bordered">
+    <thead class = "table-dark">
+        <tr>
+            <th scope = "col">ОКПД2 6 <input class="form-control" type="text" id="searchInput" placeholder="Поиск по столбцу"></th>
+            <th scope = "col">ОКПД2 6 расшифровка</th>
+            <th scope = "col">ОКПД2 9</th>
+            <th scope = "col">ОКПД2 9 расшифровка</th>
+            <th scope = "col">ТНВЭД 6</th>
+            <th scope = "col">ТНВЭД 6 расшифровка</th>
+             <th scope = "col">ТНВЭД 10</th>
+            <th scope = "col">ТНВЭД 10 расшифровка</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @okpds.each do |tnvd|%>
+        <tr scope = "row">
+            <td><%= tnvd.OKPD6 %></td>
+            <td><%= tnvd.OKPD6Trans %></td>
+            <td><%= tnvd.OKPD9 %></td>
+            <td><%= tnvd.OKPD9Trans %></td>
+            <td><%= tnvd.TNVD6 %></td>
+            <td><%= tnvd.TNVD6Trans %></td>
+            <td><%= tnvd.TNVD10 %></td>
+            <td><%= tnvd.TNVD10Trans %></td>
+        </tr>
+        <%end%>
+    </tbody>
+</table>
+
+<div calss = "mx-3 container">
+    <%= paginate @okpds %>
+</div>

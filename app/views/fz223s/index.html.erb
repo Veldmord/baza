@@ -1,0 +1,37 @@
+<h2>Регулируемый рынок ФЗ 223</h2>
+<div>
+    <%= form_tag upload_fz223s_path, multipart: true do %>
+        <%= file_field_tag :file %>
+        <%= submit_tag "Load" %>
+    <%end%>
+</div>
+<div class = "container">
+    <%= link_to "Temp", "fz223s/temp_table" %>
+</div>
+<table class = "table">
+  <thead>
+    <tr>
+      <% @fz223s.columns.each do |column| %>
+        <th>
+          <% if params[:sort] == column.name && params[:direction] == 'asc'  %>
+            <%= link_to "#{column.name.titleize} ↓", {sort: column.name, direction: 'desc'}%>
+          <%else%>
+            <%= link_to "#{column.name.titleize} ↑", {sort: column.name, direction: 'asc'} %>
+          <%end%>
+        </th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% @fz223s.all.each do |record| %>
+      <tr>
+        <% @fz223s.columns.each do |column| %>
+          <td><%= record[column.name] %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<div calss = "mx-3 container">
+    <%= paginate @fz223s %>
+</div>

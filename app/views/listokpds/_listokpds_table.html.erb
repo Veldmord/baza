@@ -1,0 +1,30 @@
+<!-- Ваш файл _listokpds_table.html.erb -->
+<table class="table">
+    <thead>
+        <tr>
+            <% @listokpds.columns.each do |column| %>
+                <th>
+                    <% if params[:sort] == column.name && params[:direction] == 'asc' %>
+                        <%= link_to "#{column.name.titleize} ↓", {sort: column.name, direction: 'desc'} %>
+                    <% else %>
+                        <%= link_to "#{column.name.titleize} ↑", {sort: column.name, direction: 'asc'} %>
+                    <% end %>
+                </th>
+            <% end %>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @listokpds.each do |record| %>
+            <tr>
+                <% @listokpds.columns.each do |column| %>
+                    <td><%= record[column.name] %></td>
+                <% end %>
+                <td>
+                    <%= link_to 'Редактировать', edit_listokpd_path(record) %>
+                    <%= link_to 'Удалить', listokpd_path(record), method: :delete, data: {confirm: "Are you shure"}, class: "link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"%>
+                </td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>

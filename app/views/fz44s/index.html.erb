@@ -1,0 +1,31 @@
+<h2>Регулируемый рынок ФЗ 44</h2>
+<div>
+    <%= form_tag upload_fz44s_path, multipart: true do %>
+        <%= file_field_tag :file %>
+        <%= submit_tag "Load" %>
+    <%end%>
+</div>
+<div class = "container">
+    <%= link_to "Temp", "fz44s/temp_table" %>
+</div>
+<table class = "table">
+  <thead>
+    <tr>
+      <% @fz44s.columns.each do |column| %>
+        <th><%= column.name.titleize %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% @fz44s.all.each do |record| %>
+      <tr>
+        <% @fz44s.columns.each do |column| %>
+          <td><%= record[column.name] %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<div calss = "mx-3 container">
+    <%= paginate @fz44s %>
+</div>

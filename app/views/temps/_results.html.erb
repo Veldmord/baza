@@ -1,0 +1,25 @@
+<table class = "table">
+  <thead class = "sticky-top">
+    <tr>
+        <%@results.columns.each do |column| %>
+            <th>
+                <%sort_direction = @filters[:sort] == column.name && @filters[:direction] == 'asc' ? 'desc' : 'asc'%>
+                <%= link_to "#{column.name.titleize} #{sort_direction == 'asc' ? '↑' : '↓'}", {sort: column.name, direction: sort_direction, okpd: params[:okpd], monthly_quarter: params[:monthly_quarter]}, remote: true %>
+            </th>
+        <%end%>
+    </tr>
+  </thead>
+  <tbody>
+    <% @results.each do |result| %>
+      <tr>
+      <%@results.columns.each do |column|%>
+        <td><%= result[column.name] %></td>
+        <%end%>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div calss = "mx-3 container">
+    <%= paginate @results %>
+</div>

@@ -1,0 +1,178 @@
+<h2> Отчет по ОКПД 2</h2>
+
+<div class = "mb-3"  id = "filter_form_graph">
+  <%= form_tag all_graph_temps_path do %>
+    <%= text_field_tag :okpd, "26.40", placeholder: "OKPD 2" , autocomplete: "off", data: { autocomplete_source: auto_complete_okpd_temps_path } %>
+    <%= select_tag :year, 
+                    options_for_select(Temp.pluck(:monthly_quarter).uniq.map { |mp| mp.split('/').last }.uniq, "2023"), 
+                    selected: params[:year], 
+                    placeholder: "Квартал" %>
+    <%= "Квартал" %>
+    <% [1, 2, 3, 4].each do |quarter| %>
+      <div class="form-check form-check-inline">
+        <%= check_box_tag "quarter[]", quarter, true %>
+        <%= label_tag "#{quarter}", quarter %>
+      </div>
+    <% end %>
+    <button type="submit">Обновить</button>
+  <% end %>
+</div>
+
+
+<div class = 'row'>
+  <div class = 'col-md-6 text-center'>
+    <h2>График</h2>
+  </div>
+  <div class = 'col-md-6'>
+    <h2>Дополнительная информация</h2>
+  </div>
+</div>
+<div id="chart_container">
+</div>
+
+
+<script>
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+
+  function loadData() {
+    $.ajax({
+      type: 'GET',
+      url: '/temps/all_graph',
+      data: $('#filter_form_graph :input').serialize(),
+      dataType: 'json',
+      success: function(response) {
+        $('#chart_container').empty(); // Clear the chart container
+        response.sort(function(a, b){
+          return b.okpd.length - a.okpd.length
+        });
+        var container = document.createElement('div');
+        container.className = 'container-fluid';
+        $('#chart_container').append(container);
+        $.each(response, function(index, value) {
+          createChart(value, container);
+        });
+      },
+      error: function(xhr, status, error) {
+        console.log("Error:", error);
+      }
+    });
+  }
+
+  function createChart(data, container) {
+    var rownext1 = document.createElement('div');
+    rownext1.className = 'row';
+    rownext1.style.paddingBottom = '30px';
+    rownext1.innerHTML = `
+      <h1> ОКПД 2 - ${data.okpd}</h1>
+    `
+    container.appendChild(rownext1);
+
+    var row = document.createElement('div');
+    row.className = 'row';
+    row.style.paddingBottom = '30px';
+    container.appendChild(row);
+
+    var chartCol = document.createElement('div');
+    chartCol.className = 'col-md-6';
+    row.appendChild(chartCol);
+
+    var chartDiv = document.createElement('div');
+    chartDiv.style.width = '100%'; // Set the width of the chart
+    chartCol.appendChild(chartDiv);
+
+    var chartData = new google.visualization.DataTable();
+    chartData.addColumn('string', 'Okpd');
+    chartData.addColumn('number', 'ИП стоимость');
+    chartData.addColumn('number', 'ОП стоимость');
+
+    chartData.addRow([data.okpd, data.ip_cost, data.op_cost]);
+
+    var options = {
+      title: 'Регулируемый рынок ОКПД 2 - ' + data.okpd,
+      curveType: 'function',
+      legend: { position: 'bottom' },
+      hAxis: {
+        format: 'short'
+      }
+    };
+
+    var chart = new google.visualization.BarChart(chartDiv);
+    chart.draw(chartData, options);
+
+    var infoCol = document.createElement('div');
+    infoCol.className = 'col-md-6';
+    row.appendChild(infoCol);
+
+    var infoDiv = document.createElement('div');
+    infoDiv.innerHTML = `
+    <div class="row nadw8">
+      <div class="col-md-6">
+        <ul>
+          <li>ОКПД 2: ${data.okpd}</li>
+          <li>Стоимость ОП: ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data.op_cost)}</li>
+          <li>Стоимость ИП: ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data.ip_cost)}</li>
+          <li>Сумма стоимости: ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data.sum_cost)}</li>
+          <li>Экспорт стоимость: ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data.export_cost)}</li>
+          <li>Импорт стоимость: ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data.import_cost)}</li>
+          <li>Пром производство стоимость: ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data.prom_cost)}</li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <ul>
+          <li>Объем рынка: Данных нет</li>
+          <li>Доля от рынка: Данных нет</li>
+          <li>Изделия в реестре 719: Данных нет</li>
+          <li>КТУ: Данных нет</li>
+          <li>КТУ/Цена: Данных нет</li>
+        </ul>
+      </div>
+    </div>
+    `;
+    infoCol.appendChild(infoDiv);
+
+    //след строка
+    var rownext = document.createElement('div');
+    rownext.className = 'row';
+    rownext.style.paddingBottom = '30px';
+    container.appendChild(rownext);
+
+    var chartCol = document.createElement('div');
+    chartCol.className = 'col-md-6';
+    rownext.appendChild(chartCol);
+
+    var chartDiv = document.createElement('div');
+    chartDiv.style.width = '100%'; // Set the width of the chart
+    chartCol.appendChild(chartDiv);
+
+    var chartData = new google.visualization.DataTable();
+    chartData.addColumn('string', 'Okpd');
+    chartData.addColumn('number', 'Экспорт стоимость');
+    chartData.addColumn('number', 'Импорт стоимость');
+
+    chartData.addRow([data.okpd, data.export_cost, data.import_cost]);
+
+    var options = {
+      title: 'Таможенная статистика ОКПД 2 - ' + data.okpd,
+      curveType: 'function',
+      legend: { position: 'bottom' },
+      hAxis: {
+        format: 'short'
+      }
+    };
+
+    var chart = new google.visualization.BarChart(chartDiv);
+    chart.draw(chartData, options);
+  }
+
+  function drawChart() {
+    // Загружаем данные при загрузке страницы
+    loadData();
+  }
+
+  // Обрабатываем отправку формы
+  $('#filter_form_graph').submit(function(event) {
+    event.preventDefault();
+    loadData();
+  });
+</script>
