@@ -8,7 +8,7 @@ gem "spreadsheet"
 gem "kaminari"
 gem "sassc-rails"
 gem 'jquery-rails'
-gem 'jsbundling-rails'
+#gem 'jsbundling-rails'
 gem 'bootstrap-sass'
 gem 'turbolinks'
 gem 'chartkick'
