@@ -1,6 +1,6 @@
 // import the CSS framework
 @import "bootstrap-sprockets";
-@import "bootstrap";
+//@import "bootstrap";
 
 // make all images responsive by default
 img {
@@ -24,7 +24,7 @@ h1{
 // THESE ARE EXAMPLES YOU CAN MODIFY
 // create your own classes
 // to make views framework-neutral
-.column {
+/*.column {
   @extend .col-md-6;
   @extend .text-center;
   }
@@ -96,7 +96,7 @@ section {
   margin: 10px;
   display: inline-block;
   text-align: center;
-  /*overflow: hidden; /* обрезка текста, выходящего за пределы квадрата */
+  /*overflow: hidden; /* обрезка текста, выходящего за пределы квадрата 
   word-wrap: break-all;
 }
 
