@@ -1,6 +1,6 @@
 // import the CSS framework
 @import "bootstrap-sprockets";
-@import "bootstrap/scss/bootstrap";
+@import "../node_modules/bootstrap/scss/bootstrap";
 
 // make all images responsive by default
 img {
