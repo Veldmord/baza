@@ -1,0 +1,2 @@
+// turbolinks.js
+//= require turbolinks
