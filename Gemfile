@@ -6,10 +6,10 @@ ruby "3.1.2"
 gem "roo-xls"
 gem "spreadsheet"
 gem "kaminari"
-gem "sassc-rails"
+#gem "sassc-rails"
 gem 'jquery-rails'
 #gem 'jsbundling-rails'
-gem 'bootstrap-sass'
+#gem 'bootstrap-sass'
 gem 'turbolinks'
 gem 'chartkick'
 gem "sidekiq"
