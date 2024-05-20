@@ -4,6 +4,12 @@
 # the maximum value specified for Puma. Default is set to 5 threads for minimum
 # and maximum; this matches the default thread size of Active Record.
 #
+
+before_fork do
+    # Игнорировать сигнал SIGTERM
+    Signal.trap('TERM', 'IGNORE')
+end
+
 max_threads_count = ENV.fetch("RAILS_MAX_THREADS") { 5 }
 min_threads_count = ENV.fetch("RAILS_MIN_THREADS") { max_threads_count }
 threads min_threads_count, max_threads_count
@@ -38,6 +44,9 @@ workers ENV.fetch("WEB_CONCURRENCY") { 4 }
 # process behavior so workers use less memory.
 #
 preload_app!
+
+daemonize false
+exit_on_term false
 
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
