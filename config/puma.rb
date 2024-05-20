@@ -46,7 +46,7 @@ workers ENV.fetch("WEB_CONCURRENCY") { 4 }
 preload_app!
 
 #daemonize false
-exit_on_term false
+#exit_on_term false
 
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
