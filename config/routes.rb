@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   end
   
   resources :listokpds do
-    get :upload, on: :collection
+    post :upload, on: :collection
   end
   
   resources :reports do
