@@ -59,21 +59,6 @@ class Fz223sController < ApplicationController
         end
     end
 
-    def timessss
-        if[:file].present?
-            spreadsheet = Roo::Spreadsheet.open(params[:file].path)
-            header = spreadsheet.row(1)
-            filename = params[:file].original_filename
-            (2..spreadsheet.last_row).each do |i|
-                row = Hash[[header,spreadsheet.row(i)].transpose]
-                data = Fz223.new(row)
-                data.file_name = filename
-                data.save
-            end
-        redirect_to fz223s_path
-        end
-    end
-
     def temp_table
         sql = "
                     SELECT 

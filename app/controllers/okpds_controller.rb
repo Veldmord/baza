@@ -29,7 +29,7 @@ class OkpdsController < ApplicationController
                 row = Hash[[header,spreadsheet.row(i)].transpose]
                 Okpd.create(row)
             end
-        redirect_to okpd_path
+        redirect_to okpds_path
         end
     end
 
