@@ -34,7 +34,9 @@ class CustomsController < ApplicationController
             (2..spreadsheet.last_row).each do |i|
                 row = Hash[[header,spreadsheet.row(i)].transpose]
                 row['date'] = converter_date(row['date']) if row['date'].present?
-                Custom.create(row)
+                data = Custom.new(row)
+                data.updated_row = true #при создании true
+                data.save
             end
         redirect_to customs_path
         end

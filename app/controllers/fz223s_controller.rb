@@ -53,6 +53,7 @@ class Fz223sController < ApplicationController
                 row = Hash[[header,spreadsheet.row(i)].transpose]
                 data = Fz223.new(row)
                 data.file_name = filename
+                data.updated_row = true
                 data.save
             end
         redirect_to fz223s_path

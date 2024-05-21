@@ -36,6 +36,7 @@ class PromsController < ApplicationController
                 row = Hash[[header,spreadsheet.row(i)].transpose]
                 data = Prom.new(row)
                 data.file_name = filename
+                data.updated_row = true
                 data.save
             end
         redirect_to proms_path

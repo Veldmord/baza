@@ -44,6 +44,7 @@ class Fz44sController < ApplicationController
                 row = Hash[[header,spreadsheet.row(i)].transpose]
                 data = Fz44.new(row)
                 data.file_name = filename
+                data.updated_row = true
                 data.save
             end
         redirect_to fz44s_path
