@@ -1,7 +1,7 @@
 <h1>Таблица свзяи окпд и ТНВД</h1>
 
 <div>
-    <%= form_tag ("okpd/upload"), multipart: true do %>
+    <%= form_tag upload_okpds_path, multipart: true do %>
         <%= file_field_tag :file %>
         <%= submit_tag "Load" %>
     <%end%>
