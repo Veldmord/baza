@@ -1,18 +1,23 @@
 default: &default
-  #adapter: sqlite3
-  #encoding: unicode
+  adapter: postgresql
+  encoding: unicode
+  host: dpg-cp2quo4f7o1s73blr800-a.frankfurt-postgres.render.com
+  port: 5432
+  database: db_for_vniir
+  username: db_for_vniir_user
+  password: JJGIrIlvuMwyXbXQMxo8DJ3M3u5OkRU5
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
 
 development:
   <<: *default
-  adapter: sqlite3
-  database: db/development.sqlite3
+  #adapter: sqlite3
+  #database: db/development.sqlite3
 
 test:
   <<: *default
-  adapter: sqlite3
-  database: db/test.sqlite3
+  #adapter: sqlite3
+  #database: db/test.sqlite3
 
 production:
   adapter: postgresql

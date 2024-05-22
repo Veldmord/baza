@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_27_111533) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_22_080028) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "articles", force: :cascade do |t|
     t.string "title"
     t.text "body"
@@ -25,7 +28,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_27_111533) do
     t.string "country"
     t.integer "quantity"
     t.integer "USD"
-    t.integer "RUB"
+    t.bigint "RUB"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "monthly_quarter"
@@ -129,7 +132,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_27_111533) do
     t.integer "Quantity"
     t.integer "Price_per_Unit"
     t.integer "Position_Amount"
-    t.integer "Contract_Amount"
+    t.bigint "Contract_Amount"
     t.text "Contract_Documents"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -154,7 +157,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_27_111533) do
     t.integer "Quantity"
     t.integer "Price_per_Unit"
     t.integer "Position_Amount"
-    t.integer "Contract_Amount"
+    t.bigint "Contract_Amount"
     t.text "Contract_Documents"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -242,38 +245,25 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_27_111533) do
   create_table "temps", force: :cascade do |t|
     t.string "okpd"
     t.string "monthly_quarter"
-    t.integer "op_cost"
-    t.integer "ip_cost"
-    t.integer "sum_cost"
-    t.integer "op_quantity"
-    t.integer "ip_quantity"
-    t.integer "sum_quantity"
-    t.integer "export_cost"
-    t.integer "export_quantity"
-    t.integer "import_cost"
-    t.integer "import_quantity"
-    t.integer "prom_cost"
-    t.integer "prom_quantity"
-    t.integer "kty"
-    t.integer "kty_cost"
+    t.bigint "op_cost"
+    t.bigint "ip_cost"
+    t.bigint "sum_cost"
+    t.bigint "op_quantity"
+    t.bigint "ip_quantity"
+    t.bigint "sum_quantity"
+    t.bigint "export_cost"
+    t.bigint "export_quantity"
+    t.bigint "import_cost"
+    t.bigint "import_quantity"
+    t.bigint "prom_cost"
+    t.bigint "prom_quantity"
+    t.float "kty"
+    t.float "kty_cost"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "code_dethp"
     t.integer "market_share"
     t.integer "market_volume"
-  end
-
-  create_table "tnvd_okpds", force: :cascade do |t|
-    t.string "OKPD6"
-    t.string "OKPD6Trans"
-    t.string "OKPD9"
-    t.string "OKPD9Trans"
-    t.string "TNVD6"
-    t.string "TNVD6Trans"
-    t.string "TNVD10"
-    t.string "TNVD10Trans"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|

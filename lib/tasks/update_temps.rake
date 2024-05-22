@@ -373,7 +373,6 @@ namespace :update_temps do
     end
 
     task replace_fz223: :environment do 
-       
         Fz223.where(monthly_quarter: nil).each do |fz223|
             publication_date = fz223.Publication_Date
             month = publication_date.month
@@ -387,7 +386,6 @@ namespace :update_temps do
             result = "#{quarter}/#{year}"
             fz223.update(monthly_quarter: result)
         end
-
     end
 
     task replace_fz44: :environment do 

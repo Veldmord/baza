@@ -45,36 +45,32 @@ class Fz223sController < ApplicationController
     end
     
     def upload
-        if params[:file].present?
+        if[:file].present?
             spreadsheet = Roo::Spreadsheet.open(params[:file].path)
             header = spreadsheet.row(1)
             filename = params[:file].original_filename
-        
-            # Define the chunk size (e.g. 100 rows at a time)
-            chunk_size = 100
-        
-            # Initialize a counter for the current chunk
-            chunk_counter = 0
-        
-            # Loop through the spreadsheet in chunks
-            (2..spreadsheet.last_row).each_slice(chunk_size) do |rows|
-              chunk_counter += 1
-        
-              # Process the current chunk
-              rows.each do |i|
-                row = Hash[[header, spreadsheet.row(i)].transpose]
+            (2..spreadsheet.last_row).each do |i|
+                row = Hash[[header,spreadsheet.row(i)].transpose]
                 data = Fz223.new(row)
                 data.file_name = filename
                 data.updated_row = true
+                
+                publication_date = data.Publication_Date
+                month = publication_date.month
+                year = publication_date.year
+                quarter = case month
+                            when 1, 2, 3 then 1
+                            when 4, 5, 6 then 2
+                            when 7, 8, 9 then 3
+                            when 10, 11, 12 then 4
+                            end
+                result = "#{quarter}/#{year}"
+                data.monthly_quarter = result
+                
                 data.save
-              end
-        
-              # Update the progress (e.g. update a progress bar or log)
-              Rails.logger.info("Uploaded chunk ##{chunk_counter} of #{spreadsheet.last_row - 1} rows")
             end
-        
-            redirect_to fz223s_path
-          end
+        redirect_to fz223s_path
+        end
     end
 
     def temp_table
