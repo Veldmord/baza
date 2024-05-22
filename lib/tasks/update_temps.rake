@@ -192,23 +192,23 @@ namespace :update_temps do
                 ip_quantity = 0
 
                 Fz223.where(monthly_quarter: monthly_quarter, okpd: okpd).each do |fz223|
-                if fz223.OP_IP == "ОП"
-                    op_cost += fz223.Position_Amount
-                    op_quantity += fz223.Quantity
-                elsif fz223.OP_IP == "ИП"
-                    ip_cost += fz223.Position_Amount
-                    ip_quantity += fz223.Quantity
-                end
+                    if fz223.OP_IP == "ОП"
+                        op_cost += fz223.Position_Amount
+                        op_quantity += fz223.Quantity
+                    elsif fz223.OP_IP == "ИП"
+                        ip_cost += fz223.Position_Amount
+                        ip_quantity += fz223.Quantity
+                    end
                 end
 
                 Fz44.where(monthly_quarter: monthly_quarter, okpd: okpd).each do |fz44|
-                if fz44.OP_IP == "ОП"
-                    op_cost += fz44.Position_Amount
-                    op_quantity += fz44.Quantity
-                elsif fz44.OP_IP == "ИП"
-                    ip_cost += fz44.Position_Amount
-                    ip_quantity += fz44.Quantity
-                end
+                    if fz44.OP_IP == "ОП"
+                        op_cost += fz44.Position_Amount
+                        op_quantity += fz44.Quantity
+                    elsif fz44.OP_IP == "ИП"
+                        ip_cost += fz44.Position_Amount
+                        ip_quantity += fz44.Quantity
+                    end
                 end
 
                 temp.op_cost = op_cost
