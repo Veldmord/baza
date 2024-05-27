@@ -2,7 +2,7 @@
 
 <div class = "mb-3"  id = "filter_form_graph">
   <%= form_tag all_graph_temps_path do %>
-    <%= text_field_tag :okpd, "26.40", placeholder: "OKPD 2" , autocomplete: "off", data: { autocomplete_source: auto_complete_okpd_temps_path } %>
+    <%= text_field_tag :okpd, params[:okpd] || "20.40", placeholder: "OKPD 2" , autocomplete: "off", data: { autocomplete_source: auto_complete_okpd_temps_path } %>
     <%= select_tag :year, 
                     options_for_select(Temp.pluck(:monthly_quarter).uniq.map { |mp| mp.split('/').last }.uniq, "2023"), 
                     selected: params[:year], 
@@ -120,7 +120,7 @@
       </div>
       <div class="col-md-6">
         <ul>
-          <li>Объем рынка: Данных нет</li>
+          <li>Объем рынка: ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data.market_volume)}</li>
           <li>Доля от рынка: Данных нет</li>
           <li>Изделия в реестре 719: Данных нет</li>
           <li>КТУ: Данных нет</li>
