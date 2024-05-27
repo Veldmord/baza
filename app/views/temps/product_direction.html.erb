@@ -1,0 +1,22 @@
+
+<table class = "table">
+  <thead>
+    <tr>
+        <th>№ ПН</th>
+        <th>Наименование направления</th>
+        <th>Ответственный</th>
+        <th>Сколько входит ОКПД 2</th>
+        <th></th>
+    </tr>
+  </thead>
+  <tbody>
+   <% @product_directions.each do |product_direction|%>
+      <tr>
+          <th><%= product_direction.id_direction %></th>
+          <th><%= link_to product_direction.name_of_direction, navig_okpd_temps_path(id_direction: product_direction.id_direction)%></th>
+          <th><%= link_to product_direction.boss, root_path%></th>
+          <th><%= @count_okpd[product_direction.id_direction]%></th>
+      </tr>
+    <%end%>
+  </tbody>
+</table>

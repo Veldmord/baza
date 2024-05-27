@@ -1,0 +1,2 @@
+module ProductDirectionsHelper
+end

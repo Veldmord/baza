@@ -8,11 +8,30 @@ namespace :update_temps do
     #сделать загузку кусками
 
 
+    task prom_culc: :environment do #подсчет 
+        proms = Prom.where("quantity IS NOT NULL OR \"cost\" IS NOT NULL")
+        #puts proms.count(:id)
+        proms.each do |prom|
+            temp_cost = Temp.where("monthly_quarter Like ? and okpd = ?", "%#{prom.monthly_quarter.split("/")[1]}", prom.okpd).sum(:sum_cost)
+            temp_quantity = Temp.where("monthly_quarter Like ? and okpd = ?", "%#{prom.monthly_quarter.split("/")[1]}", prom.okpd).sum(:sum_quantity)
+            puts "temp_cost" + temp_cost.to_s
+            puts "temp_quantity" + temp_quantity.to_s
+            cost_per_one = temp_quantity != 0 && temp_cost != 0 ? temp_cost/temp_quantity : 0
+            #puts "cost_per_one" + cost_per_one.to_s
+            if prom.cost.nil? then
+                prom.cost = cost_per_one != 0 ? prom.quantity * cost_per_one : nil
+            else
+                prom.quantity = cost_per_one != 0 ? prom.cost/cost_per_one : nil
+            end
+            prom.save!
+        end
+    end
+
     task custom_rate: :environment do 
         monthly_quarters = ["2022", "1/2023", "2/2023", "3/2023", "4/2023"]
-        #monthly_quarters = ["1/2023"]
-        okpds = Listokpd.all.pluck(:okpd_9)
+        okpds = Okpd.pluck(:OKPD9).uniq
         monthly_quarters.each do |monthly_quarter|
+            year = monthly_quarter.split('/').last
             puts monthly_quarter
             okpds.each do |okpd|
                 # Create a new temp record or update an existing one
@@ -28,8 +47,9 @@ namespace :update_temps do
                 Okpd.where(OKPD9: okpd).each do |tnvd|
                     sum_okpds = 0
                     okpds_c = Okpd.where(TNVD10: tnvd.TNVD10).pluck(:OKPD9)
-                    sum_okpds += Temp.where(okpd: okpds_c, monthly_quarter: monthly_quarter).sum(:sum_cost)
-                    one_okpd = Temp.where(okpd: okpd, monthly_quarter: monthly_quarter).pluck(:sum_cost)
+                    #sum_okpds += Temp.where(okpd: okpds_c, monthly_quarter: monthly_quarter).sum(:sum_cost)
+                    sum_okpds += Temp.where("okpd IN (?) and monthly_quarter Like ?", okpds_c, "%#{year}%").sum(:sum_cost)
+                    one_okpd = Temp.where("okpd IN (?) and monthly_quarter Like ?", okpd, "%#{year}%").pluck(:sum_cost)
                     param_for_custom = (sum_okpds.to_f == 0 || one_okpd.first.to_f == 0) ? "1" : one_okpd.first.to_f / sum_okpds.to_f
 
                     customs = Custom.where(monthly_quarter: monthly_quarter, TNVD: tnvd.TNVD10)
@@ -74,6 +94,7 @@ namespace :update_temps do
         all_combination.uniq!.sort! { |a, b| b.split('.').size <=> a.split('.').size }
         puts "#{all_combination.count}"
         all_combination.each do |combination|
+            puts "#{combination}"
             monthly_quarters.each do |quarter|
                 count_dethp = combination.split(".").count
                 temp = Temp.find_or_create_by!(monthly_quarter: quarter, okpd: combination, code_dethp: count_dethp)
@@ -81,7 +102,7 @@ namespace :update_temps do
                 temp_filt = Temp.where("okpd Like ? and monthly_quarter = ? and code_dethp = ?", "%#{combination}%", quarter, count_dethp +1)
                 columns = [:op_cost, :ip_cost, :sum_cost, :op_quantity, :ip_quantity, :sum_quantity, :export_cost, :export_quantity, :import_cost, :import_quantity, :prom_cost, :prom_quantity]
                 columns.each do |column|
-                    sum = temp_filt.pluck(column).sum
+                    sum = temp_filt.pluck(column).compact.sum
                     temp.send("#{column}=", sum)
                 end
                 temp.code_dethp = count_dethp

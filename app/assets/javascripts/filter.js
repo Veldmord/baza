@@ -10,7 +10,7 @@ $(document).ready(function() {
     });
   });
 
-  $(document).ready(function() {
+ /* $(document).ready(function() {
     $('#okpd').autocomplete({
       source: function(request, response) {
         $.ajax({
@@ -27,4 +27,4 @@ $(document).ready(function() {
         return false;
       }
     });
-  });
+  });*/

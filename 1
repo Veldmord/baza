@@ -2,3 +2,20 @@ redis://red-cp2ro7m3e1ms73f4fmm0:6379
 postgres://db_for_vniir_user:JJGIrIlvuMwyXbXQMxo8DJ3M3u5OkRU5@dpg-cp2quo4f7o1s73blr800-a/db_for_vniir
 
 sqlite3 db/development.sqlite3 .dump > backup.sql
+
+<h1>Навигация по ОКПД-2</h1>
+<div id="navigation">
+  <h2>Список ОКПД-2 6-го уровня</h2>
+  <ul id="okpd6-list">
+    <% @okpd6_list.each do |code| %>
+      <li>
+        <%= link_to ("<b>#{code.okpd_6}</b> — #{code.trans_6}").html_safe, "#", class: "okpd6-link mt-5", data: { code: code.okpd_6 } %>
+        <ul class="okpd9-list okpd9-<%= code.okpd_6.delete('.') %>" style="display: none;">
+          <% @okpd9_data[code.okpd_6].each do |okpd| %>
+            <li><%= link_to ("<b>#{okpd.okpd_9}</b> — #{okpd.trans_9}").html_safe, "#"  %></li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+  </ul>
+</div>

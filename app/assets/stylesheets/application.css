@@ -3,3 +3,23 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
  */
+.square {
+width: 250px;
+height: 60px;
+background-color: lightblue;
+margin: 10px;
+display: inline-block;
+text-align: center;
+/*overflow: hidden;  обрезка текста, выходящего за пределы квадрата */
+word-wrap: break-all;
+}
+
+/* Стили для текста внутри квадрата */
+.square a {
+display: block;
+/*line-height: 30%; /* выравнивание текста по вертикали */
+margin: 10px;
+text-decoration: none; /* удаление подчеркивания у ссылок */
+color: black; /* цвет текста */
+word-wrap: break-all;
+}

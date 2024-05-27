@@ -87,7 +87,7 @@ section {
   @extend .btn;
   @extend .btn-primary;
   @extend .btn-xs;
-}
+}*/
 .square {
   width: 250px;
   height: 50px;
@@ -95,7 +95,7 @@ section {
   margin: 10px;
   display: inline-block;
   text-align: center;
-  /*overflow: hidden; /* обрезка текста, выходящего за пределы квадрата 
+  /*overflow: hidden;  обрезка текста, выходящего за пределы квадрата */
   word-wrap: break-all;
 }
 

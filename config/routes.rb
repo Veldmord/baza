@@ -44,8 +44,15 @@ Rails.application.routes.draw do
     post :all_graph, on: :collection
     get :all_graph, on: :collection
     get :auto_complete_okpd, on: :collection
+    get :product_direction, on: :collection
+    get :navig_okpd, on: :collection
   end
 
+  resources :product_directions do
+    post :upload, on: :collection
+  end
+
+  resources :product_directions
   resources :temps
   resources :proms
   resources :customs
