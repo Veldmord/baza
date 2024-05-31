@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_23_144632) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_28_063420) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -231,6 +231,30 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_23_144632) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "updated_row"
+  end
+
+  create_table "sum_directs", force: :cascade do |t|
+    t.string "okpd"
+    t.string "monthly_quarter"
+    t.bigint "op_cost"
+    t.bigint "ip_cost"
+    t.bigint "sum_cost"
+    t.bigint "op_quantity"
+    t.bigint "ip_quantity"
+    t.bigint "sum_quantity"
+    t.bigint "export_cost"
+    t.bigint "export_quantity"
+    t.bigint "import_cost"
+    t.bigint "import_quantity"
+    t.bigint "prom_cost"
+    t.bigint "prom_quantity"
+    t.bigint "kty"
+    t.float "kty_cost"
+    t.bigint "market_volume"
+    t.float "market_share"
+    t.integer "id_direction"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "tables", force: :cascade do |t|

@@ -100,8 +100,8 @@ namespace :update_temps do
                 temp = Temp.find_or_create_by!(monthly_quarter: quarter, okpd: combination, code_dethp: count_dethp)
                 #temp_filt = Temp.where("okpd Like ?", "%#{combination}%").where(monthly_quarter: quarter, code_dethp: count_dethp + 1 )
                 temp_filt = Temp.where("okpd Like ? and monthly_quarter = ? and code_dethp = ?", "%#{combination}%", quarter, count_dethp +1)
-                #columns = [:op_cost, :ip_cost, :sum_cost, :op_quantity, :ip_quantity, :sum_quantity, :export_cost, :export_quantity, :import_cost, :import_quantity, :prom_cost, :prom_quantity, :market_volume]
-                columns = [:market_volume]
+                columns = [:op_cost, :ip_cost, :sum_cost, :op_quantity, :ip_quantity, :sum_quantity, :export_cost, :export_quantity, :import_cost, :import_quantity, :prom_cost, :prom_quantity, :market_volume]
+                #columns = [:market_volume]
                 columns.each do |column|
                     sum = temp_filt.pluck(column).compact.sum
                     temp.send("#{column}=", sum)

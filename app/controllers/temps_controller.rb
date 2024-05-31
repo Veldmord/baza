@@ -24,7 +24,7 @@ class TempsController < ApplicationController
 
     def all_graph
         filtered = []
-        columns = [:op_cost, :ip_cost, :sum_cost, :op_quantity, :ip_quantity, :sum_quantity, :export_cost, :export_quantity, :import_cost, :import_quantity, :prom_cost, :prom_quantity]
+        columns = [:op_cost, :ip_cost, :sum_cost, :op_quantity, :ip_quantity, :sum_quantity, :export_cost, :export_quantity, :import_cost, :import_quantity, :prom_cost, :prom_quantity, :market_volume]
         Rails.logger.debug "okpd: #{params[:okpd].inspect}"
         
         okpd = params[:okpd] || "20.40"
@@ -109,16 +109,42 @@ class TempsController < ApplicationController
     def dashbord
 
     end
+    def columns_to_sum
+        [:op_cost, :ip_cost, :sum_cost, :op_quantity, :ip_quantity, :sum_quantity, :export_cost, :export_quantity, :import_cost, :import_quantity, :prom_cost, :prom_quantity, :market_volume]
+    end
 
     def navig_okpd
-        @okpd6_list = Listokpd.where(id_direction: params[:id_direction]).distinct.select(:okpd_6, :trans_6) #расшифровочку бы
-        okpd_6 = @okpd6_list.pluck(:okpd_6)
-        @okpd9_data = Listokpd.where(okpd_6: okpd_6).group_by(&:okpd_6)
+        @okpd6_list = Listokpd.where(id_direction: params[:id_direction]).distinct.select(:okpd_6, :trans_6)
+        @data_okpd6 = Temp.where("monthly_quarter Like ? ", "%2023").group_by(&:okpd).each_with_object({}) do |(okpd, group), hash|
+          hash[okpd] = columns_to_sum.map do |column|
+            { column.to_sym => group.pluck(column).compact.sum }
+          end.reduce(:merge)
+        end
+        okpd_6_codes = @okpd6_list.pluck(:okpd_6)
+        @okpd9_data = Listokpd.where(okpd_6: okpd_6_codes).group_by(&:okpd_6)
     end
 
     def product_direction
         @product_directions = ProductDirection.all
         @count_okpd = ProductDirection.joins(:listokpds).group(:id_direction).count(:id_direction)
         #@all_data = Temp.joins(:listokpds).where(id_direction: "3", )
+        #data = SumDirect.where("monthly_quarter Like ?", prams)
+        #year = params[:year] || "2023" # set default year to 2023 if no year is provided
+                
+        #respond_to do |format|
+        #    format.html
+        #    format.json {render json: data}
+        #end
     end
+
+    def product_direction_ajax
+        data = SumDirect.where(monthly_quarter: params[:year] || "2023")
+        #render json: data
+        respond_to do |format|
+            format.html
+            format.json {render json: data}
+        end
+    end
+
+
 end

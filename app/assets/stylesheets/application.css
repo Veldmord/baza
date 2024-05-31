@@ -23,3 +23,7 @@ text-decoration: none; /* удаление подчеркивания у ссы�
 color: black; /* цвет текста */
 word-wrap: break-all;
 }
+
+.size-small{
+    font-size: 10px;
+}

@@ -1,22 +1,87 @@
+<div class = "mb-3"  id = "filter_form_directoins">
+  <%= form_tag product_direction_temps_path do %>
+    <%= select_tag :year, 
+                    options_for_select([
+                      ["2023"], 
+                      ["2022"]
+                    ], params[:year]), 
+                    selected: params[:year], 
+                    placeholder: "Квартал" %>
+    <button type="submit">Обновить</button>
+  <% end %>
+</div>
 
-<table class = "table">
+<table class = "table size-small" id = "table_wiht_prod_dir">
   <thead>
     <tr>
         <th>№ ПН</th>
         <th>Наименование направления</th>
         <th>Ответственный</th>
         <th>Сколько входит ОКПД 2</th>
-        <th></th>
+        <th>Сумма Регрынка</th>
+        <th>Количество Регрынка</th>
+        <th>Экспорт стоимость</th>
+        <th>Экспорт количество</th>
+        <th>Импорт стоимость</th>
+        <th>Импорт количество</th>
+        <th>Пром производство стоим</th>
+        <th>Пром производство колич</th>
+        <th>Объем рынка</th>
     </tr>
   </thead>
-  <tbody>
-   <% @product_directions.each do |product_direction|%>
-      <tr>
-          <th><%= product_direction.id_direction %></th>
-          <th><%= link_to product_direction.name_of_direction, navig_okpd_temps_path(id_direction: product_direction.id_direction)%></th>
-          <th><%= link_to product_direction.boss, root_path%></th>
-          <th><%= @count_okpd[product_direction.id_direction]%></th>
+  <tbody id="table-body">
+    <% @product_directions.each do |product_direction|%>
+      <tr id="row-<%= product_direction.id_direction %>">
+        <th><%= product_direction.id_direction %></th>
+        <th><%= link_to product_direction.name_of_direction, navig_okpd_temps_path(id_direction: product_direction.id_direction)%></th>
+        <th><%= link_to product_direction.boss, root_path%></th>
+        <th><%= @count_okpd[product_direction.id_direction]%></th>
+        <th id="sum_cost-<%= product_direction.id_direction %>"></th>
+        <th id="sum_quant-<%= product_direction.id_direction %>"></th>
+        <th id="exp_cost-<%= product_direction.id_direction %>"></th>
+        <th id="exp_quant-<%= product_direction.id_direction %>"></th>
+        <th id="import_cost-<%= product_direction.id_direction %>"></th>
+        <th id="import_quant-<%= product_direction.id_direction %>"></th>
+        <th id="prom_cost-<%= product_direction.id_direction %>"></th>
+        <th id="prom_quant-<%= product_direction.id_direction %>"></th>
+        <th id="mark_vol-<%= product_direction.id_direction %>"></th>
       </tr>
     <%end%>
   </tbody>
 </table>
+
+
+<script>
+  $(document).ready(function() { 
+    loadSumCosts();
+  });
+
+  $(document).on('submit', '#filter_form_directoins', function(e) {
+    e.preventDefault();
+    loadSumCosts();
+  });
+
+  function loadSumCosts() {
+    var year = $('#filter_form_directoins select[name="year"]').val();
+    $.ajax({
+      type: 'GET',
+      url: '/temps/product_direction_ajax',
+      data: { year: year },
+      dataType: 'json',
+      success: function(response) {
+        $.each(response, function(id, data) {
+          $('#sum_cost-' + (id + 1)).text(data.sum_cost);
+          $('#sum_quant-' + (id + 1)).text(data.sum_quantity);
+          $('#exp_cost-' + (id + 1)).text(data.export_cost);
+          $('#exp_quant-' + (id + 1)).text(data.export_quantity);
+          $('#import_cost-' + (id + 1)).text(data.import_cost);
+          $('#import_quant-' + (id + 1)).text(data.import_quantity);
+          $('#prom_cost-' + (id + 1)).text(data.prom_cost);
+          $('#prom_quant-' + (id + 1)).text(data.prom_quantity);
+          $('#mark_vol-' + (id + 1)).text(data.market_volume);
+        });
+
+      },
+    });
+  }
+</script>

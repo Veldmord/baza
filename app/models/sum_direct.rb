@@ -1,0 +1,2 @@
+class SumDirect < ApplicationRecord
+end

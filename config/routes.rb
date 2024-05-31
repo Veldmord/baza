@@ -45,6 +45,7 @@ Rails.application.routes.draw do
     get :all_graph, on: :collection
     get :auto_complete_okpd, on: :collection
     get :product_direction, on: :collection
+    get :product_direction_ajax, on: :collection
     get :navig_okpd, on: :collection
   end
 

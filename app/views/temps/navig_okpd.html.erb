@@ -1,4 +1,4 @@
-<h1>Навигация по ОКПД-2</h1>
+<!--<h1>Навигация по ОКПД-2</h1>
 <div id="navigation">
   <h2>Список ОКПД-2 6-го уровня</h2>
   <ul id="okpd6-list">
@@ -13,7 +13,51 @@
       </li>
     <% end %>
   </ul>
-</div>
+</div> -->
+
+<table class="table size-small">
+  <thead>
+    <tr>
+      <td>okpd</td>
+      <td>Расшифровка</td>
+      <td>ОП стоимость</td>
+      <td>ИП стоимость</td>
+      <td>ОП+ИП стоимость</td>
+      <td>ОП количество</td>
+      <td>ИП количество</td>
+      <td>ОП+ИП количество</td>
+      <td>Экспорт стоимость</td>
+      <td>Экспорт количество</td>
+      <td>Импорт стоимость</td>
+      <td>Импорт количество</td>
+      <td>Пром. Производство стоимость</td>
+      <td>Пром. Производство количество</td>
+      <td>Объем рвнка</td>
+    </tr>
+  </thead>
+  <tbody>
+    <% @okpd6_list.each do |code| %>
+      <tr>
+        <td><%= link_to code.okpd_6, "#", class: "okpd6-link mt-5", data: { code: code.okpd_6 } %></td>
+        <td><%= link_to code.trans_6, "#", class: "okpd6-link mt-5", data: { code: code.okpd_6 } %></td>
+        <% @data_okpd6[code.okpd_6].each do |column, value| %>
+          <td><%= value %></td>
+        <% end %>
+      </tr>
+      <% @okpd9_data[code.okpd_6].each do |okpd| %>
+        <tr class="okpd9-list okpd9-<%= code.okpd_6.delete('.') %>" style="display: none;">
+          <td class = "bg-body-secondary"><%= link_to okpd.okpd_9, all_graph_temps_path(okpd: okpd.okpd_9) %></td>
+          <td class = "bg-body-secondary"><%= link_to okpd.trans_9, all_graph_temps_path(okpd: okpd.okpd_9) %></td>
+          <% @data_okpd6[okpd.okpd_9].each do |column, value| %>
+            <td class = "bg-body-secondary"><%= value %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+
 
 <script>
   $(document).on('click', '.okpd6-link', function(e) {
