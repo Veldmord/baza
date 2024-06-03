@@ -51,16 +51,20 @@ namespace :update_temps do
                     sum_okpds += Temp.where("okpd IN (?) and monthly_quarter Like ?", okpds_c, "%#{year}%").sum(:sum_cost)
                     one_okpd = Temp.where("okpd IN (?) and monthly_quarter Like ?", okpd, "%#{year}%").pluck(:sum_cost)
                     param_for_custom = (sum_okpds.to_f == 0 || one_okpd.first.to_f == 0) ? "1" : one_okpd.first.to_f / sum_okpds.to_f
-
+                    puts "tnvd - %#{tnvd.TNVD10}%"
+                    puts "one_okpd - %#{one_okpd}%"
+                    puts "sum_okpds - %#{sum_okpds}%"
+                    puts "param_for_custom - %#{param_for_custom}%"
                     customs = Custom.where(monthly_quarter: monthly_quarter, TNVD: tnvd.TNVD10)
 
                     customs.each do |customs|
                     if customs.export_import == "ЭК"
-                        export_cost += customs.RUB*param_for_custom.to_i
-                        export_quantity += customs.quantity*param_for_custom.to_i
+                        export_cost += customs.RUB*param_for_custom.to_f
+                        export_quantity += customs.quantity*param_for_custom.to_f
                     elsif customs.export_import == "ИМ"
-                        import_cost += customs.RUB*param_for_custom.to_i
-                        import_quantity += customs.quantity*param_for_custom.to_i
+                        import_cost += customs.RUB*param_for_custom.to_f
+                        import_quantity += customs.quantity*param_for_custom.to_f
+                        
                     end
                     end
                 end
@@ -70,6 +74,11 @@ namespace :update_temps do
                 temp.import_cost = import_cost
                 temp.import_quantity = import_quantity
 
+                puts "export_cost - %#{export_cost}%"
+                puts "export_quantity - %#{export_quantity}%"
+                puts "import_cost - %#{import_cost}%"
+                puts "import_quantity - %#{import_quantity}%"
+
                 temp.save!
             end
         end
@@ -77,7 +86,7 @@ namespace :update_temps do
 
     task group_data: :environment do #main
         monthly_quarters = Temp.all.pluck(:monthly_quarter).uniq
-        okpds = Listokpd.all.pluck(:okpd_9).uniq
+        okpds = Listokpd.pluck(:okpd_9).uniq 
         all_combination = []
         
         okpds.each do |okpd|

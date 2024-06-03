@@ -2,7 +2,7 @@
 
 <div class = "mb-3"  id = "filter_form_graph">
   <%= form_tag all_graph_temps_path do %>
-    <%= text_field_tag :okpd, params[:okpd] || "20.40", placeholder: "OKPD 2" , autocomplete: "off", data: { autocomplete_source: auto_complete_okpd_temps_path } %>
+    <%= text_field_tag :okpd, params[:okpd] || "26.40", placeholder: "OKPD 2" , autocomplete: "off", data: { autocomplete_source: auto_complete_okpd_temps_path } %>
     <%= select_tag :year, 
                     options_for_select(Temp.pluck(:monthly_quarter).uniq.map { |mp| mp.split('/').last }.uniq, "2023"), 
                     selected: params[:year], 

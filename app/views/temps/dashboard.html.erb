@@ -1,0 +1,121 @@
+<div class = "mb-3"  id = "filter_form_dashboard">
+  <%= form_tag dashboard_temps_path , remote: true do %>
+    <%= text_field_tag :okpd, params[:okpd] || "26.40", placeholder: "OKPD 2" , autocomplete: "off", data: { autocomplete_source: auto_complete_okpd_temps_path } %>
+    <%= select_tag :year, 
+                    options_for_select([
+                      ["2023"], 
+                      ["2022"]
+                    ], params[:year]), 
+                    selected: params[:year], 
+                    placeholder: "Квартал" %>
+    <%= "Квартал" %>
+    <% [1, 2, 3, 4].each do |quarter| %>
+      <div class="form-check form-check-inline">
+        <%= check_box_tag "quarter[]", quarter, true %>
+        <%= label_tag "#{quarter}", quarter %>
+      </div>
+    <% end %>
+    <button type="submit">Обновить</button>
+  <% end %>
+</div>
+
+
+<div class="container">
+  <div id="chart_container_reg"></div>
+  <!-- Add containers for other 4 charts -->
+  <div id="chart_container_1"></div>
+  <div id="chart_container_2"></div>
+  <div id="chart_container_3"></div>
+  <div id="chart_container_4"></div>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+    $('#filter_form_dashboard').submit(function(event) {
+        event.preventDefault();
+        $.ajax({
+        type: 'GET',
+        url: '/temps/dashboard',
+        data: $(this).serialize(),
+        dataType: 'json',
+        success: function(data) {
+            drawCharts(data);
+        }
+        });
+    });
+    });
+
+    function drawCharts(data) {
+    // Draw chart 1 (Bar Chart)
+    google.charts.load('current', { packages: ['corechart'] });
+    google.charts.setOnLoadCallback(function() {
+        const chartData = google.visualization.arrayToDataTable([
+        ['Contry', 'Mhl'],
+        // Use data from server response to populate chart data
+        data.map(function(item) {
+            return [item.okpd, item.op_cost];
+        })
+        ]);
+        const options = {
+        title: 'World Wide Wine Production'
+        };
+        const chart = new google.visualization.BarChart(document.getElementById('chart_container_reg'));
+        chart.draw(chartData, options);
+    });
+
+    // Draw chart 2 (Pie Chart)
+    google.charts.load('current', { packages: ['corechart'] });
+    google.charts.setOnLoadCallback(function() {
+        const chartData = google.visualization.arrayToDataTable([
+        ['Category', 'Value'],
+        // Use data from server response to populate chart data
+        data.map(function(item) {
+            return [item.okpd, item.ip_cost];
+        })
+        ]);
+        const options = {
+        title: 'Pie Chart'
+        };
+        const chart = new google.visualization.PieChart(document.getElementById('chart_container_1'));
+        chart.draw(chartData, options);
+    });
+
+    // Draw chart 3 (Histogram)
+    google.charts.load('current', { packages: ['corechart'] });
+    google.charts.setOnLoadCallback(function() {
+        const chartData = google.visualization.arrayToDataTable([
+        ['Category', 'Value'],
+        // Use data from server response to populate chart data
+        data.map(function(item) {
+            return [item.okpd, item.sum_cost];
+        })
+        ]);
+        const options = {
+        title: 'Histogram'
+        };
+        const chart = new google.visualization.Histogram(document.getElementById('chart_container_2'));
+        chart.draw(chartData, options);
+    });
+
+    // Draw chart 4 (Circle Chart)
+    google.charts.load('current', { packages: ['corechart'] });
+    google.charts.setOnLoadCallback(function() {
+        const chartData = google.visualization.arrayToDataTable([
+        ['Category', 'Value'],
+        // Use data from server response to populate chart data
+        data.map(function(item) {
+            return [item.okpd, item.export_cost];
+        })
+        ]);
+        const options = {
+        title: 'Circle Chart'
+        };
+        const chart = new google.visualization.CircleChart(document.getElementById('chart_container_3'));
+        chart.draw(chartData, options);
+    });
+
+    // Draw chart 5 (Another chart type)
+    // ...
+    };
+</script>

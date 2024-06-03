@@ -47,6 +47,8 @@ Rails.application.routes.draw do
     get :product_direction, on: :collection
     get :product_direction_ajax, on: :collection
     get :navig_okpd, on: :collection
+    get :dashboard, on: :collection
+    post :dashboard, on: :collection
   end
 
   resources :product_directions do

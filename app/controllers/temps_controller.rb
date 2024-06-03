@@ -25,9 +25,8 @@ class TempsController < ApplicationController
     def all_graph
         filtered = []
         columns = [:op_cost, :ip_cost, :sum_cost, :op_quantity, :ip_quantity, :sum_quantity, :export_cost, :export_quantity, :import_cost, :import_quantity, :prom_cost, :prom_quantity, :market_volume]
-        Rails.logger.debug "okpd: #{params[:okpd].inspect}"
         
-        okpd = params[:okpd] || "20.40"
+        okpd = params[:okpd] || "26.40"
         Rails.logger.debug "okpd: #{okpd.inspect}"
     
         parts = okpd.split('.')
@@ -106,9 +105,44 @@ class TempsController < ApplicationController
         end
     end
 
-    def dashbord
-
+    def dashboard
+        filtered = []
+        columns = [:op_cost, :ip_cost, :sum_cost, :op_quantity, :ip_quantity, :sum_quantity, :export_cost, :export_quantity, :import_cost, :import_quantity, :prom_cost, :prom_quantity, :market_volume]
+        
+        okpd = params[:okpd] || "26.40"
+        Rails.logger.debug "okpd: #{okpd.inspect}"
+    
+        #parts = okpd.split('.')
+        quarter = params[:quarter] || [1,2,3,4]
+        year = params[:year] || "2023"
+        Rails.logger.debug "year: #{year.inspect}"
+        #part_s = ""
+        #parts.each_with_index do |part, index|
+            #part_s += index == 0 ? part : '.' + part
+        #temps = Temp.where(okpd: okpd).where(monthly_quarter: quarter.map { |q| "#{q}/#{year}" })
+        temps = Temp.where(okpd: okpd, monthly_quarter: quarter.map { |q| "#{q}/#{year}" })
+        #temps = Temp.where(okpd: okpd)
+        puts temps
+        puts temps.count
+        temp_data = columns.each_with_object({}) do |column, hash|
+            # Заменяем nil на 0, чтобы избежать ошибки при суммировании
+            hash[column] = temps.pluck(column).compact.sum #{ |value| value || 0 }
+            puts "hash - #{temps.pluck(column)}"
+        end
+        temp_data[:okpd] = okpd
+        Rails.logger.debug temp_data
+        filtered << Temp.new(temp_data)
+        Rails.logger.debug filtered
+        #end
+    
+        #render json: filtered
+        respond_to do |format|
+            format.json { render json: filtered }
+            format.html #{ render 'dashboard'}
+        end
+        Rails.logger.debug "рендер"
     end
+
     def columns_to_sum
         [:op_cost, :ip_cost, :sum_cost, :op_quantity, :ip_quantity, :sum_quantity, :export_cost, :export_quantity, :import_cost, :import_quantity, :prom_cost, :prom_quantity, :market_volume]
     end
