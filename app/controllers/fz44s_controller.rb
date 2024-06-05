@@ -13,6 +13,10 @@ class Fz44sController < ApplicationController
     def create
         @fz44 = Fz44.new(fz44_params)
     end
+
+    def destroy
+        Fz223.destroy_by(file_name: params[:file_name])
+    end
     
     def fz44_params
         params.require(:fz44).permit(
@@ -72,6 +76,7 @@ class Fz44sController < ApplicationController
             "SUM(CASE WHEN \"OP_IP\" = 'ОП' THEN \"Position_Amount\" ELSE 0 END) AS position_count_op",
             "SUM(CASE WHEN \"OP_IP\" = 'ИП' THEN \"Position_Amount\" ELSE 0 END) AS position_count_ip"
           ).group("okpd").order("okpd")
-
+        
+        @count_files = Fz44.select(:file_name).group(:file_name)
     end 
 end

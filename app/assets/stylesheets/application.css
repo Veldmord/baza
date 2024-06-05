@@ -3,25 +3,59 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
  */
+
+.container {
+    display: flex;
+    width: 90%;
+}
+
+.chart-section {
+    width: 66.66%;
+    display: flex;
+    flex-direction: column;
+}
+
+.text-section {
+    width: 33.33%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-item {
+    flex: 1; /* Равномерное распределение высоты для графиков */
+    margin-bottom: 10px;
+}
+
+.chart-item .chart-container {
+    height: 300px;
+    border: 0px solid #ccc;
+}
+
+.text-item {
+    flex: 1; /* Равномерное распределение высоты для текста */
+    border: 0x solid #ccc;
+    padding: 10px;
+}
+
 .square {
-width: 250px;
-height: 60px;
-background-color: lightblue;
-margin: 10px;
-display: inline-block;
-text-align: center;
-/*overflow: hidden;  обрезка текста, выходящего за пределы квадрата */
-word-wrap: break-all;
+    width: 250px;
+    height: 60px;
+    background-color: lightblue;
+    margin: 10px;
+    display: inline-block;
+    text-align: center;
+    /*overflow: hidden;  обрезка текста, выходящего за пределы квадрата */
+    word-wrap: break-all;
 }
 
 /* Стили для текста внутри квадрата */
 .square a {
-display: block;
-/*line-height: 30%; /* выравнивание текста по вертикали */
-margin: 10px;
-text-decoration: none; /* удаление подчеркивания у ссылок */
-color: black; /* цвет текста */
-word-wrap: break-all;
+    display: block;
+    /*line-height: 30%; /* выравнивание текста по вертикали */
+    margin: 10px;
+    text-decoration: none; /* удаление подчеркивания у ссылок */
+    color: black; /* цвет текста */
+    word-wrap: break-all;
 }
 
 .size-small{

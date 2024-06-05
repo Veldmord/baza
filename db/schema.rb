@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_28_063420) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_05_071624) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -130,8 +130,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_28_063420) do
     t.string "Unit_of_Measure"
     t.string "OP_IP"
     t.integer "Quantity"
-    t.integer "Price_per_Unit"
-    t.integer "Position_Amount"
+    t.bigint "Price_per_Unit"
+    t.bigint "Position_Amount"
     t.bigint "Contract_Amount"
     t.text "Contract_Documents"
     t.datetime "created_at", null: false
@@ -155,8 +155,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_28_063420) do
     t.string "Unit_of_Measure"
     t.string "OP_IP"
     t.integer "Quantity"
-    t.integer "Price_per_Unit"
-    t.integer "Position_Amount"
+    t.bigint "Price_per_Unit"
+    t.bigint "Position_Amount"
     t.bigint "Contract_Amount"
     t.text "Contract_Documents"
     t.datetime "created_at", null: false

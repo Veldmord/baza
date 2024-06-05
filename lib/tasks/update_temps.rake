@@ -7,6 +7,53 @@ namespace :update_temps do
     #прогноз
     #сделать загузку кусками
 
+    task update_second: :environment do  #появилось новое поле code_dethp
+        # Код из моего предыдущего ответа идет здесь
+    monthly_quarters = ["2022", "1/2023", "2/2023", "3/2023", "4/2023"]
+    okpds = Okpd.pluck(:OKPD9)
+    monthly_quarters.each do |monthly_quarter|
+        puts monthly_quarter
+        okpds.each do |okpd|
+            # Create a new temp record or update an existing one
+            temp = Temp.find_or_create_by!(monthly_quarter: monthly_quarter, okpd: okpd)
+
+            # Calculate op_cost, ip_cost, sum_cost, op_quantity, ip_quantity, and sum_quantity
+            op_cost = 0
+            ip_cost = 0
+            op_quantity = 0
+            ip_quantity = 0
+
+            Fz223.where(monthly_quarter: monthly_quarter, okpd: okpd).each do |fz223|
+                if fz223.OP_IP == "ОП"
+                    op_cost += fz223.Position_Amount
+                    op_quantity += fz223.Quantity
+                elsif fz223.OP_IP == "ИП"
+                    ip_cost += fz223.Position_Amount
+                    ip_quantity += fz223.Quantity
+                end
+            end
+
+            Fz44.where(monthly_quarter: monthly_quarter, okpd: okpd).each do |fz44|
+                if fz44.OP_IP == "ОП"
+                    op_cost += fz44.Position_Amount
+                    op_quantity += fz44.Quantity
+                elsif fz44.OP_IP == "ИП"
+                    ip_cost += fz44.Position_Amount
+                    ip_quantity += fz44.Quantity
+                end
+            end
+
+            temp.op_cost = op_cost
+            temp.ip_cost = ip_cost
+            temp.sum_cost = op_cost + ip_cost
+            temp.op_quantity = op_quantity
+            temp.ip_quantity = ip_quantity
+            temp.sum_quantity = op_quantity + ip_quantity
+
+            temp.save!
+        end
+    end
+end
 
     task prom_culc: :environment do #подсчет 
         proms = Prom.where("quantity IS NOT NULL OR \"cost\" IS NOT NULL")

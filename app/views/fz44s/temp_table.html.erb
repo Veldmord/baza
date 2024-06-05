@@ -1,5 +1,13 @@
 <div class = "container-sm">
     <h2>Регулируемый рынок ФЗ 44, сводная</h2>
+
+     <% @count_files.each do |file|%>
+        <ul>
+            <li><%= file['file_name'] %></li>
+            <%= link_to "Удалить",  url_for(controller: 'fz44s', action: 'destroy', file_name: file['file_name']), method: :delete, data: {confirm: "Are you shure"}, class: "link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"%>
+        </ul>
+    <%end%>
+
     <table class = "table table-sm">
         <thead>
             <tr>

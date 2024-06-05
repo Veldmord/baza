@@ -10,21 +10,4 @@ $(document).ready(function() {
     });
   });
 
- /* $(document).ready(function() {
-    $('#okpd').autocomplete({
-      source: function(request, response) {
-        $.ajax({
-          url: '<%= auto_complete_okpd_temps_path %>',
-          data: { term: request.term },
-          dataType: 'json',
-          success: function(data) {
-            response(data);
-          }
-        });
-      },
-      select: function(event, ui) {
-        $(this).val(ui.item.value);
-        return false;
-      }
-    });
-  });*/
+ 

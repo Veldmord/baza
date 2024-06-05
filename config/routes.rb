@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   resources :fz44s do
     post :upload, on: :collection
     get :temp_table, on: :collection
+    delete :destroy, on: :collection
   end
   
   resources :fz223s do

@@ -46,8 +46,8 @@
       </tr>
       <% @okpd9_data[code.okpd_6].each do |okpd| %>
         <tr class="okpd9-list okpd9-<%= code.okpd_6.delete('.') %>" style="display: none;">
-          <td class = "bg-body-secondary"><%= link_to okpd.okpd_9, all_graph_temps_path(okpd: okpd.okpd_9) %></td>
-          <td class = "bg-body-secondary"><%= link_to okpd.trans_9, all_graph_temps_path(okpd: okpd.okpd_9) %></td>
+          <td class = "bg-body-secondary"><%= link_to okpd.okpd_9, dashboard_temps_path(okpd: okpd.okpd_9) %></td>
+          <td class = "bg-body-secondary"><%= link_to okpd.trans_9, dashboard_temps_path(okpd: okpd.okpd_9) %></td>
           <% @data_okpd6[okpd.okpd_9].each do |column, value| %>
             <td class = "bg-body-secondary"><%= value %></td>
           <% end %>

@@ -138,7 +138,7 @@ class TempsController < ApplicationController
         #render json: filtered
         respond_to do |format|
             format.json { render json: filtered }
-            format.html #{ render 'dashboard'}
+            format.html { render 'dashboard'}
         end
         Rails.logger.debug "рендер"
     end

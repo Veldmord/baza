@@ -74,21 +74,14 @@ class Fz223sController < ApplicationController
     end
 
     def temp_table
-        sql = "
-                    SELECT 
-                    okpd, 
-                    SUM(CASE WHEN OP_IP = 'ОП' THEN Quantity ELSE 0 END) AS quantity_count_OP,
-                    SUM(CASE WHEN OP_IP = 'ИП' THEN Quantity ELSE 0 END) AS quantity_count_IP,
-                    SUM(CASE WHEN OP_IP = 'ОП' THEN Position_Amount ELSE 0 END) AS position_count_OP,
-                    SUM(CASE WHEN OP_IP = 'ИП' THEN Position_Amount ELSE 0 END) AS position_count_IP
-                FROM 
-                    fz223s 
-                GROUP BY 
-                    okpd 
-                ORDER BY 
-                    okpd"
-        @fz223s = ActiveRecord::Base.connection.execute(sql)
-        @count_files = Fz223.group(:file_name)
+        @fz223s = Fz223.select(
+            "okpd",
+            "SUM(CASE WHEN \"OP_IP\" = 'ОП' THEN \"Quantity\" ELSE 0 END) AS quantity_count_op",
+            "SUM(CASE WHEN \"OP_IP\" = 'ИП' THEN \"Quantity\" ELSE 0 END) AS quantity_count_ip",
+            "SUM(CASE WHEN \"OP_IP\" = 'ОП' THEN \"Position_Amount\" ELSE 0 END) AS position_count_op",
+            "SUM(CASE WHEN \"OP_IP\" = 'ИП' THEN \"Position_Amount\" ELSE 0 END) AS position_count_ip"
+          ).group("okpd").order("okpd")
+          @count_files = Fz223.select(:file_name).group(:file_name)
        #@fz223s = Fz223.group(:okpd).sum(:Quantity)
     end 
 end
