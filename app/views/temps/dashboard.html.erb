@@ -183,14 +183,26 @@
         google.charts.load('current', { packages: ['corechart'] });
         google.charts.setOnLoadCallback(function() {
 
-            var data = google.visualization.arrayToDataTable([
+            var chartData = google.visualization.arrayToDataTable([
                 ['Task', 'Hours per Day'],
                 ['Доля', [10, 90]] // два значения в одном массиве
             ]);
 
-            const options = {
-            title: 'Пром производство/объем рынка',
-            pieHole: 0.4
+            var options = {
+                title: 'Доля от объема рынка',
+                legend: {position: 'none'}, // скрываем легенду
+                chartArea: {width: '80%', height: '80%'}, // настраиваем размер области диаграммы
+                bar: {groupWidth: '100%'}, // делаем полосу на всю ширину
+                hAxis: {
+                minValue: 0,
+                maxValue: 100,
+                ticks: [0, 25, 50, 75, 100], // устанавливаем отметки на оси X
+                textStyle: {fontSize: 12}, // настраиваем размер шрифта меток оси X
+                },
+                vAxis: {
+                title: 'Процент', // название оси Y
+                textStyle: {fontSize: 12}, // настраиваем размер шрифта меток оси Y
+                }
             };
             const chart = new google.visualization.BarChart(document.getElementById('chart_container_3'));
             chart.draw(chartData, options);

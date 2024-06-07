@@ -19,6 +19,11 @@
       <%= render "kaminari/navigation" %>
     </header>
     <main>
+    <div class="flash">
+      <% if flash[:notice] %>
+        <div class="notice"><%= flash[:notice] %></div>
+      <% end %>
+    </div>
       <%= yield %>
     </main>
   </body>

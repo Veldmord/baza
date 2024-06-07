@@ -9,9 +9,10 @@ namespace :update_temps do
 
     task update_second: :environment do  #появилось новое поле code_dethp
         # Код из моего предыдущего ответа идет здесь
-    monthly_quarters = ["2022", "1/2023", "2/2023", "3/2023", "4/2023"]
-    okpds = Okpd.pluck(:OKPD9)
-    monthly_quarters.each do |monthly_quarter|
+        monthly_quarters = ["2022", "1/2023", "2/2023", "3/2023", "4/2023"]
+        #okpds = Okpd.pluck(:OKPD9).uniq
+        okpds = Okpd.where.not(OKPD6: "26.40").pluck(:OKPD9).uniq
+        monthly_quarters.each do |monthly_quarter|
         puts monthly_quarter
         okpds.each do |okpd|
             # Create a new temp record or update an existing one
@@ -49,11 +50,11 @@ namespace :update_temps do
             temp.op_quantity = op_quantity
             temp.ip_quantity = ip_quantity
             temp.sum_quantity = op_quantity + ip_quantity
-
+            puts "#{temp.okpd} - #{temp.op_cost} - #{temp.ip_cost} - #{temp.sum_cost} - #{temp.op_quantity} - #{temp.ip_quantity} - #{temp.sum_quantity}"
             temp.save!
         end
     end
-end
+    end
 
     task prom_culc: :environment do #подсчет 
         proms = Prom.where("quantity IS NOT NULL OR \"cost\" IS NOT NULL")
@@ -133,7 +134,7 @@ end
 
     task group_data: :environment do #main
         monthly_quarters = Temp.all.pluck(:monthly_quarter).uniq
-        okpds = Listokpd.pluck(:okpd_9).uniq 
+        okpds = Okpd.pluck(:OKPD9).uniq 
         all_combination = []
         
         okpds.each do |okpd|

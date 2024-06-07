@@ -1,11 +1,11 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  host: dpg-cp2quo4f7o1s73blr800-a.frankfurt-postgres.render.com
+  host: 147.45.254.179
   port: 5432
-  database: db_for_vniir
-  username: db_for_vniir_user
-  password: JJGIrIlvuMwyXbXQMxo8DJ3M3u5OkRU5
+  database: default_db
+  username: gen_user
+  password: Tt1193917!
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
 

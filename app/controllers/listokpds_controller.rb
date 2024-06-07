@@ -68,15 +68,39 @@ class ListokpdsController < ApplicationController
     end
     
     def upload
-        if[:file].present?
+        if params[:file].present?
             spreadsheet = Roo::Spreadsheet.open(params[:file].path)
             header = spreadsheet.row(1)
-            #filename = params[:file].original_filename
+          
+            start_time = Time.now # Замеряем время начала работы скрипта
+            updated_count = 0
+            created_count = 0
+          
             (2..spreadsheet.last_row).each do |i|
-                row = Hash[[header,spreadsheet.row(i)].transpose]
+              row = Hash[[header, spreadsheet.row(i)].transpose]
+              id = row['id'] # Предполагаем, что в Excel файле есть столбец 'id'
+          
+              if id.present?
+                listokpd = Listokpd.find_by(id: id)
+          
+                # Обновляем, только если есть изменения
+                if listokpd && listokpd.attributes.except("created_at", "updated_at") != row.stringify_keys
+                  listokpd.update(row)
+                  updated_count += 1
+                end
+              else
+                # Если id нет, создаем новую запись 
                 Listokpd.create(row)
+                created_count += 1
+              end
             end
-        redirect_to listokpds_path
+          
+            end_time = Time.now # Замеряем время окончания работы скрипта
+            duration = end_time - start_time # Вычисляем время выполнения скрипта
+          
+            redirect_to listokpds_path, notice: "Файл успешно загружен и обработан. \n Обновлено записей: #{updated_count}. \n Создано записей: #{created_count}. \n Время выполнения: #{duration} секунд."
+        else
+        redirect_to listokpds_path, alert: 'Файл не выбран.'
         end
     end
 

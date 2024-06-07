@@ -40,32 +40,47 @@ class Fz44sController < ApplicationController
     end
     
     def upload #загрузка блоками
-        if[:file].present?
+        if params[:file].present?
             spreadsheet = Roo::Spreadsheet.open(params[:file].path)
             header = spreadsheet.row(1)
             filename = params[:file].original_filename
-            (2..spreadsheet.last_row).each do |i|
+          
+            # Initialize an empty array to store data for bulk insertion
+            data_to_insert = []
+          
+            (2..spreadsheet.last_row).each_slice(1000) do |batch| 
+              batch.each do |i|
                 row = Hash[[header,spreadsheet.row(i)].transpose]
                 data = Fz44.new(row)
                 data.file_name = filename
                 data.updated_row = true
-
+          
                 publication_date = data.Publication_Date
                 month = publication_date.month
                 year = publication_date.year
                 quarter = case month
-                            when 1, 2, 3 then 1
-                            when 4, 5, 6 then 2
-                            when 7, 8, 9 then 3
-                            when 10, 11, 12 then 4
-                            end
+                          when 1, 2, 3 then 1
+                          when 4, 5, 6 then 2
+                          when 7, 8, 9 then 3
+                          when 10, 11, 12 then 4
+                          end
                 result = "#{quarter}/#{year}"
                 data.monthly_quarter = result
 
-                data.save
+                data_attributes = data.attributes.except('id', 'created_at', 'updated_at') 
+                # Add the prepared data object to the array 
+                data_to_insert << data_attributes 
+              end
+          
+              # Bulk insert the accumulated data
+              Fz44.insert_all(data_to_insert)
+          
+              # Clear the array for the next batch
+              data_to_insert.clear
             end
-        redirect_to fz44s_path
-        end
+          
+            redirect_to fz44s_path
+          end
     end
 
     def temp_table
