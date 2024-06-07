@@ -108,7 +108,10 @@
             chartData.addRow([data[0].okpd, data[0].ip_cost, data[0].op_cost]);
 
             const options = {
-            title: 'Регулируемый рынок'
+            title: 'Регулируемый рынок',
+            hAxis: {
+              minValue: 0 // Начинать ось Y с 0
+            }
             };
             const chart = new google.visualization.BarChart(document.getElementById('chart_container_reg'));
             chart.draw(chartData, options);
@@ -130,19 +133,21 @@
         google.charts.setOnLoadCallback(function() {
 
             var chartData = new google.visualization.DataTable();
+
             chartData.addColumn('string', 'Okpd');
             chartData.addColumn('number', 'Экспорт');
-            //chartData.addColumn('number', 'Импорт');
+            chartData.addColumn('number', 'Импорт');
 
-            //chartData.addRow([data[0].okpd, data[0].export_cost, data[0].import_cost]);
-            //chartData.addRow([['Экспорт', 'Импорт'], [data[0].export_cost, data[0].import_cost]]);
-            chartData.addRow(['Экспорт', data[0].export_cost]);
-            chartData.addRow(['Импорт', data[0].import_cost]);
+            chartData.addRow([data[0].okpd, data[0].export_cost, data[0].import_cost]);
+
 
             const options = {
-            title: 'Таможня'
+            title: 'Таможня',
+            hAxis: {
+              minValue: 0 // Начинать ось Y с 0
+            }
             };
-            const chart = new google.visualization.PieChart(document.getElementById('chart_container_1'));
+            const chart = new google.visualization.BarChart(document.getElementById('chart_container_1'));
             chart.draw(chartData, options);
 
             const textItem = document.getElementById('text_chart_container_1');
@@ -165,7 +170,10 @@
 
             chartData.addRow([data[0].okpd, data[0].prom_cost, data[0].prom_quantity]);
             const options = {
-            title: 'Пром производство'
+            title: 'Пром производство',
+            hAxis: {
+              minValue: 0 // Начинать ось Y с 0
+            }
             };
             const chart = new google.visualization.BarChart(document.getElementById('chart_container_2'));
             chart.draw(chartData, options);
@@ -183,27 +191,19 @@
         google.charts.load('current', { packages: ['corechart'] });
         google.charts.setOnLoadCallback(function() {
 
-            var chartData = google.visualization.arrayToDataTable([
-                ['Task', 'Hours per Day'],
-                ['Доля', [10, 90]] // два значения в одном массиве
-            ]);
+            var chartData = new google.visualization.DataTable();
+            chartData.addColumn('string', 'Okpd');
+            chartData.addColumn('number', 'Пром производство');
+            chartData.addColumn('number', 'Объем рынка');
 
-            var options = {
-                title: 'Доля от объема рынка',
-                legend: {position: 'none'}, // скрываем легенду
-                chartArea: {width: '80%', height: '80%'}, // настраиваем размер области диаграммы
-                bar: {groupWidth: '100%'}, // делаем полосу на всю ширину
-                hAxis: {
-                minValue: 0,
-                maxValue: 100,
-                ticks: [0, 25, 50, 75, 100], // устанавливаем отметки на оси X
-                textStyle: {fontSize: 12}, // настраиваем размер шрифта меток оси X
-                },
-                vAxis: {
-                title: 'Процент', // название оси Y
-                textStyle: {fontSize: 12}, // настраиваем размер шрифта меток оси Y
-                }
+            chartData.addRow([data[0].okpd, data[0].prom_cost, data[0].market_volume]);
+            const options = {
+            title: 'Пром производство и объем рынка',
+            hAxis: {
+              minValue: 0 // Начинать ось Y с 0
+            }
             };
+
             const chart = new google.visualization.BarChart(document.getElementById('chart_container_3'));
             chart.draw(chartData, options);
 

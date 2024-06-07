@@ -70,15 +70,15 @@
       dataType: 'json',
       success: function(response) {
         $.each(response, function(id, data) {
-          $('#sum_cost-' + (id + 1)).text(data.sum_cost);
-          $('#sum_quant-' + (id + 1)).text(data.sum_quantity);
-          $('#exp_cost-' + (id + 1)).text(data.export_cost);
-          $('#exp_quant-' + (id + 1)).text(data.export_quantity);
-          $('#import_cost-' + (id + 1)).text(data.import_cost);
-          $('#import_quant-' + (id + 1)).text(data.import_quantity);
-          $('#prom_cost-' + (id + 1)).text(data.prom_cost);
-          $('#prom_quant-' + (id + 1)).text(data.prom_quantity);
-          $('#mark_vol-' + (id + 1)).text(data.market_volume);
+          $('#sum_cost-' + (data.id_direction)).text(data.sum_cost);
+          $('#sum_quant-' + (data.id_direction)).text(data.sum_quantity);
+          $('#exp_cost-' + (data.id_direction)).text(data.export_cost);
+          $('#exp_quant-' + (data.id_direction)).text(data.export_quantity);
+          $('#import_cost-' + (data.id_direction)).text(data.import_cost);
+          $('#import_quant-' + (data.id_direction)).text(data.import_quantity);
+          $('#prom_cost-' + (data.id_direction)).text(data.prom_cost);
+          $('#prom_quant-' + (data.id_direction)).text(data.prom_quantity);
+          $('#mark_vol-' + (data.id_direction)).text(data.market_volume);
         });
 
       },

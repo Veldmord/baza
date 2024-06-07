@@ -7,6 +7,27 @@ namespace :update_temps do
     #прогноз
     #сделать загузку кусками
 
+    task market_vol: :environment do #подсчет 
+        monthly_quarters = ["2022", "1/2023", "2/2023", "3/2023", "4/2023"]
+        #okpds = Okpd.pluck(:OKPD9).uniq
+        okpds = Okpd.pluck(:OKPD9).uniq
+        monthly_quarters.each do |monthly_quarter|
+            puts monthly_quarter
+            okpds.each do |okpd|
+                # Create a new temp record or update an existing one
+                temp = Temp.find_or_create_by!(monthly_quarter: monthly_quarter, okpd: okpd)
+                
+                temp.import_cost ||=0
+                temp.export_cost ||=0
+                temp.prom_cost ||=0
+
+                temp.market_volume = temp.import_cost - temp.export_cost + temp.prom_cost
+                puts "#{temp.market_volume}"
+                temp.save!
+            end
+        end
+    end
+
     task update_second: :environment do  #появилось новое поле code_dethp
         # Код из моего предыдущего ответа идет здесь
         monthly_quarters = ["2022", "1/2023", "2/2023", "3/2023", "4/2023"]
@@ -97,8 +118,8 @@ namespace :update_temps do
                     okpds_c = Okpd.where(TNVD10: tnvd.TNVD10).pluck(:OKPD9)
                     #sum_okpds += Temp.where(okpd: okpds_c, monthly_quarter: monthly_quarter).sum(:sum_cost)
                     sum_okpds += Temp.where("okpd IN (?) and monthly_quarter Like ?", okpds_c, "%#{year}%").sum(:sum_cost)
-                    one_okpd = Temp.where("okpd IN (?) and monthly_quarter Like ?", okpd, "%#{year}%").pluck(:sum_cost)
-                    param_for_custom = (sum_okpds.to_f == 0 || one_okpd.first.to_f == 0) ? "1" : one_okpd.first.to_f / sum_okpds.to_f
+                    one_okpd = Temp.where("okpd IN (?) and monthly_quarter Like ?", okpd, "%#{year}%").sum(:sum_cost)
+                    param_for_custom = (sum_okpds.to_f == 0 || one_okpd.to_f == 0) ? "0" : one_okpd.to_f / sum_okpds.to_f
                     puts "tnvd - %#{tnvd.TNVD10}%"
                     puts "one_okpd - %#{one_okpd}%"
                     puts "sum_okpds - %#{sum_okpds}%"
