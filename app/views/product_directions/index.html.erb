@@ -28,6 +28,7 @@
         <% @product_directions.columns.each do |column| %>
           <td><%= record[column.name] %></td>
         <% end %>
+        <td><%= link_to 'Редактировать', edit_product_direction_path(record)%></td>
       </tr>
     <% end %>
   </tbody>

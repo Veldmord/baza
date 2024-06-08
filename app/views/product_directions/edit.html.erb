@@ -1,0 +1,13 @@
+<h2>Редактирование продуктового направления</h2>
+
+<%= form_for @product_direction do |prod| %>
+    <% @product_direction.attributes.each do |name, value| %>
+        <div class = "field">
+            <%= prod.label name %>
+            <%= prod.text_field name, value: value %>
+        </div>
+    <% end %>
+    <%= prod.submit 'Обновить' %>
+<%end %>
+
+<%= link_to 'Назад', product_directions_path %>

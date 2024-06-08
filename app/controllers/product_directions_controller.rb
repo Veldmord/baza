@@ -13,6 +13,20 @@ class ProductDirectionsController < ApplicationController
     def create
         @product_direction = ProductDirection.new(product_direction_params)
     end
+
+    def edit
+        @product_direction = ProductDirection.find(params[:id])
+    end
+
+    def update
+        @product_direction = ProductDirection.find(params[:id])
+        if @product_direction.update(product_direction_params)
+            redirect_to product_directions_path
+        else 
+            render :edit
+        end
+
+    end
     
     def product_direction_params
         params.require(:product_direction).permit(

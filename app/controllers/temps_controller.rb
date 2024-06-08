@@ -147,20 +147,24 @@ class TempsController < ApplicationController
         [:op_cost, :ip_cost, :sum_cost, :op_quantity, :ip_quantity, :sum_quantity, :export_cost, :export_quantity, :import_cost, :import_quantity, :prom_cost, :prom_quantity, :market_volume]
     end
 
-    def navig_okpd
+    def navig_okpd #оптимизировать, 6 окпд сразу из темп 
         @okpd6_list = Listokpd.where(id_direction: params[:id_direction]).distinct.select(:okpd_6, :trans_6)
         @data_okpd6 = Temp.where("monthly_quarter Like ? ", "%2023").group_by(&:okpd).each_with_object({}) do |(okpd, group), hash|
           hash[okpd] = columns_to_sum.map do |column|
             { column.to_sym => group.pluck(column).compact.sum }
           end.reduce(:merge)
         end
+        #@data_okpd6 = Temp.where("monthly_quarter Like ? and okpd in (?)", "%2023", @okpd6_list.map { |okpd| okpd.okpd_6 } ).group(:okpd).sum
         okpd_6_codes = @okpd6_list.pluck(:okpd_6)
         @okpd9_data = Listokpd.where(okpd_6: okpd_6_codes).group_by(&:okpd_6)
     end
 
     def product_direction
-        @product_directions = ProductDirection.all
-        @count_okpd = ProductDirection.joins(:listokpds).group(:id_direction).count(:id_direction)
+        @product_directions = ProductDirection.all.order(id_direction: :asc)
+        @count_okpd = ProductDirection.joins("INNER JOIN listokpds ON product_directions.id_direction = listokpds.id_direction")
+        .group("product_directions.id_direction")
+        .count(:id_direction)
+        puts @count_okpd.inspect
         #@all_data = Temp.joins(:listokpds).where(id_direction: "3", )
         #data = SumDirect.where("monthly_quarter Like ?", prams)
         #year = params[:year] || "2023" # set default year to 2023 if no year is provided
@@ -172,7 +176,8 @@ class TempsController < ApplicationController
     end
 
     def product_direction_ajax
-        data = SumDirect.where(monthly_quarter: params[:year] || "2023")
+        data = SumDirect.where(monthly_quarter: params[:year] || "2023").order(id_direction: :asc)
+        puts data.map { |d| d.id_direction }
         #render json: data
         respond_to do |format|
             format.html

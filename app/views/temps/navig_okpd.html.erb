@@ -63,7 +63,6 @@
   $(document).on('click', '.okpd6-link', function(e) {
     e.preventDefault(); // Отменяем действие по умолчанию (переход по ссылке)
     var okpd6Code = $(this).data('code');
-    //$(".okpd9-list").hide(); // Скрываем все списки ОКПД-2 девятого уровня
     $(".okpd9-" + okpd6Code.replace(/\./g, '')).toggle();
     console.log(".okpd9-" + okpd6Code.replace(/\./g, '')); // Показываем только список соответствующий коду ОКПД-2 шестого уровня
   });
