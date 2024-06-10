@@ -44,12 +44,10 @@
 
 
 <script>
-  $(document).ready(function() {
-    $(document).on('click', '.okpd6-link', function(e) {
-      e.preventDefault();
-      var okpd6Code = $(this).data('code');
-      $(".okpd9-" + okpd6Code.replace(/\./g, '')).toggle();
-      console.log(".okpd9-" + okpd6Code.replace(/\./g, '')); 
-    });
+ $('.okpd6-link').on('click', function(e) {
+    e.preventDefault();
+    var okpd6Code = $(this).data('code');
+    $(".okpd9-" + okpd6Code.replace(/\./g, '')).toggle();
+    console.log(".okpd9-" + okpd6Code.replace(/\./g, '')); 
   });
 </script>
