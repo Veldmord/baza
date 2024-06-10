@@ -32,7 +32,7 @@ namespace :update_temps do
         # Код из моего предыдущего ответа идет здесь
         monthly_quarters = ["2022", "1/2023", "2/2023", "3/2023", "4/2023"]
         #okpds = Okpd.pluck(:OKPD9).uniq
-        okpds = Okpd.where.not(OKPD6: "26.40").pluck(:OKPD9).uniq
+        okpds = Listokpd.pluck(:okpd_9).uniq
         monthly_quarters.each do |monthly_quarter|
         puts monthly_quarter
         okpds.each do |okpd|
