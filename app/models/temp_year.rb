@@ -1,0 +1,2 @@
+class TempYear < ApplicationRecord
+end

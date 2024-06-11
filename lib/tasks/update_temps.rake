@@ -7,6 +7,24 @@ namespace :update_temps do
     #прогноз
     #сделать загузку кусками
 
+    task sum_year: :environment do
+        years = ["2022", "2023"]
+        okpds = Temp.pluck(:okpd).uniq
+        temp_all = Temp.all
+        years.each do |year|
+            okpds.each do |okpd|
+                puts okpd
+                temp_year = TempYear.find_or_create_by!(okpd: okpd, monthly_quarter: year)
+                temp_filt = temp_all.where(okpd: okpd).where("monthly_quarter Like ?", "%#{year}")
+                columns = [:op_cost, :ip_cost, :sum_cost, :op_quantity, :ip_quantity, :sum_quantity, :export_cost, :export_quantity, :import_cost, :import_quantity, :prom_cost, :prom_quantity, :market_volume]
+                columns.each do |column|
+                    temp_year[column] = temp_filt.pluck(column).compact.sum
+                end
+                temp_year.save!
+            end
+        end  
+    end 
+
     task market_vol: :environment do #подсчет 
         monthly_quarters = ["2022", "1/2023", "2/2023", "3/2023", "4/2023"]
         #okpds = Okpd.pluck(:OKPD9).uniq
@@ -98,77 +116,64 @@ namespace :update_temps do
 
     task custom_rate: :environment do 
         monthly_quarters = ["2022", "1/2023", "2/2023", "3/2023", "4/2023"]
-        okpds = Listokpd.pluck(:okpd_9).uniq
-
-        # Преобразуем monthly_quarters в хэш для быстрого доступа
-        monthly_quarters_hash = monthly_quarters.each_with_object({}) do |monthly_quarter, hash|
-        year = monthly_quarter.split('/').last
-        hash[monthly_quarter] = year
-        end
-
-        # Группируем записи Custom по TNVD и году для ускорения поиска
-        customs_by_tnvd_and_year = Custom.group(:TNVD, :monthly_quarter).sum(:RUB, :quantity)
-
-        # Загружаем все записи Okpd для ускорения поиска
-        okpds_records = Okpd.all
-
-        # Итерируемся по OKPD и кварталам
-        okpds.each do |okpd|
+        okpds = Listokpd.pluck(:okpd_9).uniq # изменить фильтрацию по окпд
         monthly_quarters.each do |monthly_quarter|
-            year = monthly_quarters_hash[monthly_quarter]
+            year = monthly_quarter.split('/').last
+            puts monthly_quarter
+            okpds.each do |okpd|
+                # Create a new temp record or update an existing one
+                temp = Temp.find_or_create_by!(monthly_quarter: monthly_quarter, okpd: okpd)
 
-            # Ищем соответствующие записи Temp
-            temp = Temp.find_or_create_by!(monthly_quarter: monthly_quarter, okpd: okpd)
+                # Calculate export_cost, export_quantity, import_cost, and import_quantity
+                export_cost = 0
+                export_quantity = 0
+                import_cost = 0
+                import_quantity = 0
+                #okpd_record = 
+                
+                Okpd.where(OKPD9: okpd).each do |tnvd|
+                    sum_okpds = 0
+                    okpds_c = Okpd.where(TNVD10: tnvd.TNVD10).pluck(:OKPD9)
+                    #sum_okpds += Temp.where(okpd: okpds_c, monthly_quarter: monthly_quarter).sum(:sum_cost)
+                    sum_okpds += Temp.where("okpd IN (?) and monthly_quarter Like ?", okpds_c, "%#{year}%").sum(:sum_cost)
+                    one_okpd = Temp.where("okpd IN (?) and monthly_quarter Like ?", okpd, "%#{year}%").sum(:sum_cost)
+                    param_for_custom = (sum_okpds.to_f == 0 || one_okpd.to_f == 0) ? "0" : one_okpd.to_f / sum_okpds.to_f
+                    puts "tnvd - %#{tnvd.TNVD10}%"
+                    puts "one_okpd - %#{one_okpd}%"
+                    puts "sum_okpds - %#{sum_okpds}%"
+                    puts "param_for_custom - %#{param_for_custom}%"
+                    customs = Custom.where(monthly_quarter: monthly_quarter, TNVD: tnvd.TNVD10)
 
-            # Инициализируем значения
-            export_cost = 0
-            export_quantity = 0
-            import_cost = 0
-            import_quantity = 0
-
-            # Находим все TNVD, которые связаны с текущим OKPD
-            tnvds = okpds_records.where(OKPD9: okpd).pluck(:TNVD10)
-
-            # Итерируемся по TNVD
-            tnvds.each do |tnvd|
-            # Находим записи Custom для текущего TNVD и года
-            customs = customs_by_tnvd_and_year[[tnvd, monthly_quarter]]
-
-            # Если есть записи Custom
-            if customs
-                # Вычисляем sum_okpds
-                sum_okpds = Temp.where("okpd IN (?) and monthly_quarter LIKE ?", okpds_records.where(TNVD10: tnvd).pluck(:OKPD9), "%#{year}%").sum(:sum_cost)
-
-                # Вычисляем one_okpd
-                one_okpd = Temp.where("okpd = ? and monthly_quarter LIKE ?", okpd, "%#{year}%").sum(:sum_cost)
-
-                # Вычисляем param_for_custom
-                param_for_custom = (sum_okpds.to_f == 0 || one_okpd.to_f == 0) ? "0" : one_okpd.to_f / sum_okpds.to_f
-
-                # Обновляем значения export_cost, export_quantity, import_cost, import_quantity
-                if customs["RUB"]
-                export_cost += customs["RUB"] * param_for_custom.to_f if customs["export_import"] == "ЭК"
-                import_cost += customs["RUB"] * param_for_custom.to_f if customs["export_import"] == "ИМ"
+                    customs.each do |customs|
+                    if customs.export_import == "ЭК"
+                        export_cost += customs.RUB*param_for_custom.to_f
+                        export_quantity += customs.quantity*param_for_custom.to_f
+                    elsif customs.export_import == "ИМ"
+                        import_cost += customs.RUB*param_for_custom.to_f
+                        import_quantity += customs.quantity*param_for_custom.to_f
+                        
+                    end
+                    end
                 end
-                if customs["quantity"]
-                export_quantity += customs["quantity"] * param_for_custom.to_f if customs["export_import"] == "ЭК"
-                import_quantity += customs["quantity"] * param_for_custom.to_f if customs["export_import"] == "ИМ"
-                end
-            end
-            end
 
-            # Обновляем запись Temp
-            temp.update!(export_cost: export_cost,
-                        export_quantity: export_quantity,
-                        import_cost: import_cost,
-                        import_quantity: import_quantity)
-        end
+                temp.export_cost = export_cost
+                temp.export_quantity = export_quantity
+                temp.import_cost = import_cost
+                temp.import_quantity = import_quantity
+
+                puts "export_cost - %#{export_cost}%"
+                puts "export_quantity - %#{export_quantity}%"
+                puts "import_cost - %#{import_cost}%"
+                puts "import_quantity - %#{import_quantity}%"
+
+                temp.save!
+            end
         end
     end
 
     task group_data: :environment do #main
         monthly_quarters = Temp.all.pluck(:monthly_quarter).uniq
-        okpds = Okpd.pluck(:OKPD9).uniq 
+        okpds = Listokpd.where("okpd_9 Like ?", "27%").pluck(:okpd_9).uniq 
         all_combination = []
         
         okpds.each do |okpd|
@@ -483,38 +488,6 @@ namespace :update_temps do
         temp.sum_quantity = temp.op_quantity + temp.ip_quantity
     
         temp.save!
-    end
-
-    task replace_fz223: :environment do 
-        Fz223.where(monthly_quarter: nil).each do |fz223|
-            publication_date = fz223.Publication_Date
-            month = publication_date.month
-            year = publication_date.year
-            quarter = case month
-                       when 1, 2, 3 then 1
-                       when 4, 5, 6 then 2
-                       when 7, 8, 9 then 3
-                       when 10, 11, 12 then 4
-                       end
-            result = "#{quarter}/#{year}"
-            fz223.update(monthly_quarter: result)
-        end
-    end
-
-    task replace_fz44: :environment do 
-        Fz44.where(monthly_quarter: nil).each do |fz44|
-            publication_date = fz44.Publication_Date
-            month = publication_date.month
-            year = publication_date.year
-            quarter = case month
-                       when 1, 2, 3 then 1
-                       when 4, 5, 6 then 2
-                       when 7, 8, 9 then 3
-                       when 10, 11, 12 then 4
-                       end
-            result = "#{quarter}/#{year}"
-            fz44.update(monthly_quarter: result)
-        end
     end
 
     task replace_custom: :environment do 

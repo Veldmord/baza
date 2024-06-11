@@ -105,7 +105,15 @@
             chartData.addColumn('number', 'ИП');
             chartData.addColumn('number', 'ОП');
 
-            chartData.addRow([data[0].okpd, data[0].ip_cost, data[0].op_cost]);
+
+              
+            chartData.addRow([data[0][1].monthly_quarter, data[0][1].ip_cost, data[0][1].op_cost]);
+            chartData.addRow([data[0][0].monthly_quarter, data[0][0].ip_cost, data[0][0].op_cost]);
+            chartData.addRow([data[0][2].monthly_quarter, data[0][2].ip_cost + data[0][0].ip_cost, data[0][2].op_cost + data[0][0].op_cost]);
+            chartData.addRow([data[0][3].monthly_quarter, data[0][3].ip_cost + data[0][2].ip_cost + data[0][0].ip_cost, data[0][3].op_cost + data[0][2].op_cost + data[0][0].op_cost]);
+            chartData.addRow([data[0][4].monthly_quarter,
+                              data[0][4].ip_cost + data[0][3].ip_cost + data[0][2].ip_cost + data[0][0].ip_cost,
+                              data[0][4].op_cost + data[0][3].op_cost + data[0][2].op_cost + data[0][0].op_cost]);
 
             const options = {
             title: 'Регулируемый рынок',
@@ -113,7 +121,7 @@
               minValue: 0 // Начинать ось Y с 0
             }
             };
-            const chart = new google.visualization.BarChart(document.getElementById('chart_container_reg'));
+            const chart = new google.visualization.ColumnChart(document.getElementById('chart_container_reg'));
             chart.draw(chartData, options);
 
             const textItem = document.getElementById('text_chart_container_reg');
@@ -122,9 +130,9 @@
             // Предполагаем, что в `data` есть свойства `name` и `value`
             list.innerHTML = `
                 <p>Описание графика :</p>
-                <p>Стоимоть ОП - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0].op_cost)}</p>
-                <p>Стоимоть ИП - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0].ip_cost)}</p>
-                <p>Стоимоть общая - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0].sum_cost)}</p>
+                <p>Стоимоть ОП - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0][4].op_cost + data[0][3].op_cost + data[0][2].op_cost + data[0][0].op_cost)}</p>
+                <p>Стоимоть ИП - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0][4].ip_cost + + data[0][3].ip_cost + data[0][2].ip_cost + data[0][0].ip_cost)}</p>
+                <p>Стоимоть общая - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0][4].sum_cost + data[0][3].sum_cost + data[0][2].sum_cost + data[0][0].sum_cost)}</p>
             `;
         });
 

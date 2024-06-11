@@ -108,39 +108,26 @@ class TempsController < ApplicationController
     def dashboard
         filtered = []
         columns = [:op_cost, :ip_cost, :sum_cost, :op_quantity, :ip_quantity, :sum_quantity, :export_cost, :export_quantity, :import_cost, :import_quantity, :prom_cost, :prom_quantity, :market_volume]
-        
         okpd = params[:okpd] || "26.40"
-        Rails.logger.debug "okpd: #{okpd.inspect}"
-    
-        #parts = okpd.split('.')
         quarter = params[:quarter] || [1,2,3,4]
         year = params[:year] || "2023"
-        Rails.logger.debug "year: #{year.inspect}"
-        #part_s = ""
-        #parts.each_with_index do |part, index|
-            #part_s += index == 0 ? part : '.' + part
-        #temps = Temp.where(okpd: okpd).where(monthly_quarter: quarter.map { |q| "#{q}/#{year}" })
-        temps = Temp.where(okpd: okpd, monthly_quarter: quarter.map { |q| "#{q}/#{year}" })
-        #temps = Temp.where(okpd: okpd)
-        puts temps
-        puts temps.count
-        temp_data = columns.each_with_object({}) do |column, hash|
+        #temps = Temp.where(okpd: okpd, monthly_quarter: quarter.map { |q| "#{q}/#{year}" })
+        temps = Temp.where(okpd: okpd)
+
+
+
+        #temp_data = columns.each_with_object({}) do |column, hash|
             # Заменяем nil на 0, чтобы избежать ошибки при суммировании
-            hash[column] = temps.pluck(column).compact.sum #{ |value| value || 0 }
-            puts "hash - #{temps.pluck(column)}"
-        end
-        temp_data[:okpd] = okpd
-        Rails.logger.debug temp_data
-        filtered << Temp.new(temp_data)
-        Rails.logger.debug filtered
+        #    hash[column] = temps.pluck(column).compact.sum #{ |value| value || 0 }
+        #    puts "hash - #{temps.pluck(column)}"
         #end
-    
-        #render json: filtered
+        #temp_data[:okpd] = okpd
+        filtered << temps
+
         respond_to do |format|
             format.json { render json: filtered }
             format.html { render 'dashboard'}
         end
-        Rails.logger.debug "рендер"
     end
 
     def columns_to_sum
@@ -154,7 +141,6 @@ class TempsController < ApplicationController
             { column.to_sym => group.pluck(column).compact.sum }
           end.reduce(:merge)
         end
-        #@data_okpd6 = Temp.where("monthly_quarter Like ? and okpd in (?)", "%2023", @okpd6_list.map { |okpd| okpd.okpd_6 } ).group(:okpd).sum
         okpd_6_codes = @okpd6_list.pluck(:okpd_6)
         @okpd9_data = Listokpd.where(okpd_6: okpd_6_codes).group_by(&:okpd_6)
     end
@@ -164,7 +150,7 @@ class TempsController < ApplicationController
         @count_okpd = ProductDirection.joins("INNER JOIN listokpds ON product_directions.id_direction = listokpds.id_direction")
         .group("product_directions.id_direction")
         .count(:id_direction)
-        puts @count_okpd.inspect
+        #puts @count_okpd.inspect
         #@all_data = Temp.joins(:listokpds).where(id_direction: "3", )
         #data = SumDirect.where("monthly_quarter Like ?", prams)
         #year = params[:year] || "2023" # set default year to 2023 if no year is provided
