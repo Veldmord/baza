@@ -56,6 +56,7 @@ Rails.application.routes.draw do
     post :upload, on: :collection
   end
 
+  resources :temp_years
   resources :product_directions
   resources :temps
   resources :proms

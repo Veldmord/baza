@@ -1,0 +1,46 @@
+<table class="table table-striped table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>ОКПД 2</th>
+      <th>Год</th>
+      <th>Критичность</th>
+      <th>ИМ-ЭК, руб.</th>
+      <th>Доля ОП</th>
+      <th>Динамика ИП</th>
+      <th>Динамика ОП</th>
+      <th>Стоимость по ФЗ</th>
+      <th>Количество оп ФЗ</th>
+      <th>Экспорт стоимость</th>
+      <th>Импорт стоимость</th>
+      <th>Пром стоимость</th>
+      <th>Пром количесвтво</th>
+      <th>КТУ</th>
+      <th>КТУ/Цена</th>
+      <th>Объем рынка</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% temp_years.each do |temp_year| %>
+      <tr>
+        <td><%= temp_year.okpd %></td>
+        <td><%= temp_year.monthly_quarter %></td>
+        <td><%= temp_year.critical %></td>
+        <td><%= number_to_currency(temp_year.import_cost - temp_year.export_cost, unit: '', precision: 0) %></td>
+        <td><%= temp_year.part_op %></td>
+        <td><%= temp_year.dynamic_ip %></td>
+        <td><%= temp_year.dynamic_op %></td>
+        <td><%= number_to_currency(temp_year.sum_cost, unit: '', precision: 0) %></td>
+        <td><%= temp_year.sum_quantity %></td>
+        <td><%= number_to_currency(temp_year.export_cost, unit: '', precision: 0) %></td>
+        <td><%= number_to_currency(temp_year.import_cost, unit: '', precision: 0) %></td>
+        <td><%= number_to_currency(temp_year.prom_cost, unit: '', precision: 0) %></td>
+        <td><%= temp_year.prom_quantity %></td>
+        <td><%= temp_year.kty %></td>
+        <td><%= temp_year.kty_cost %></td>
+        <td><%= temp_year.market_volume %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+

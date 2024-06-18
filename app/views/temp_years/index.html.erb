@@ -1,0 +1,94 @@
+<h1>Таблица TempYears</h1>
+
+<div id="filters">
+  <%= form_tag(temp_years_path, method: :get) do %>
+    <div>
+      <%= label_tag :monthly_quarter, "Год:" %>
+      <%= select_tag :monthly_quarter, options_for_select(@years.unshift(""), params[:monthly_quarter]), include_blank: true%>
+    </div>
+
+    <div>
+      <%= label_tag :okpd, "OKPD:" %>
+      <%= select_tag :okpd, options_for_select(@okpds.unshift(""), params[:okpd]), include_blank: true %>
+    </div>
+
+    <div>
+      <%= label_tag :critical, "Критичность:" %>
+      <%= select_tag :critical, options_for_select([["", ""], ["Да", true], ["Нет", false]], params[:critical]), include_blank: true %>
+    </div>
+  <% end %>
+</div>
+
+<div id="temp_years_table">
+  <%= render partial: 'temp_years_table', locals: { temp_years: @temp_years } %>
+</div>
+
+<script>
+  $(document).ready(function() {
+  $('#filters select').change(function() {
+    // Получаем значения всех фильтров
+    var monthlyQuarter = $('#monthly_quarter').val();
+    var okpd = $('#okpd').val();
+    var critical = $('#critical').val();
+
+    $.ajax({
+      url: '<%= temp_years_path %>', 
+      type: 'GET',
+      data: { 
+        monthly_quarter: monthlyQuarter, 
+        okpd: okpd, 
+        critical: critical 
+      }, 
+      dataType: 'script', 
+      success: function(data) {
+        // Обновляем таблицу и фильтры, как в предыдущем примере
+        $('#temp_years_table').html($(data).find('#temp_years_table').html());
+
+        $('#filters select').each(function() {
+          var select = $(this);
+          var selectName = select.attr('name');
+          var selectedValue = select.val();
+          var newOptions = $(data).find('#filters select[name="' + selectName + '"]').html();
+          select.html(newOptions);
+          select.val(selectedValue);
+        });
+      }
+    });
+  });
+});
+
+    $(document).ready(function() {
+  $('table thead th').each(function(columnIndex) {
+    var ascending = true; // Флаг для направления сортировки
+
+    $(this).click(function() {
+      var table = $(this).closest('table').eq(0);
+      var rows = table.find('tbody > tr').toArray().sort(function(a, b) {
+        var aVal = $(a).find('td').eq(columnIndex).text();
+        var bVal = $(b).find('td').eq(columnIndex).text();
+
+        // Обработка числовых значений:
+        if (!isNaN(aVal) && !isNaN(bVal)) {
+          aVal = parseFloat(aVal);
+          bVal = parseFloat(bVal);
+        }
+
+        // Сортировка в зависимости от направления:
+        if (ascending) {
+          return aVal.localeCompare(bVal, undefined, {numeric: true, sensitivity: 'base'}); 
+        } else {
+          return bVal.localeCompare(aVal, undefined, {numeric: true, sensitivity: 'base'}); 
+        }
+      });
+
+      // Изменение порядка строк в DOM:
+      $.each(rows, function(index, row) {
+        table.children('tbody').append(row);
+      });
+
+      // Изменяем направление сортировки:
+      ascending = !ascending;
+    });
+  });
+});
+</script>

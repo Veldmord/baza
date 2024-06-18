@@ -61,5 +61,22 @@ namespace :my do
             end
         end
     end
-    
+
+    desc "Заполняет поле okpd_rang в зависимости от длины okpd (учитывая разделители)"
+    task update_okpd_rang: :environment do
+        TempYear.find_each do |record|
+            okpd_length = record.okpd.gsub(/[^0-9]/, '').length # Удаляем разделители перед подсчетом
+            record.update_column(:okpd_rang, okpd_length == 6 ? 6 : 9)
+        end
+        puts "Поле okpd_rang успешно обновлено."
+    end
+
+    desc "Рассчитывает критичность для 9-значных окпд и заполняет поле critical"
+    task :calculate_criticality => :environment do
+        TempYear.where(okpd_rang: 9).find_each do |record|
+            criticality = record.import_cost - record.export_cost
+            record.update_column(:critical, criticality > 1_000_000_000)
+        end
+        puts "Поле critical успешно обновлено для 9-значных окпд."
+    end
 end

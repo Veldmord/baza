@@ -117,6 +117,7 @@
 
             const options = {
             title: 'Регулируемый рынок',
+            isStacked: true,
             hAxis: {
               minValue: 0 // Начинать ось Y с 0
             }
@@ -146,8 +147,13 @@
             chartData.addColumn('number', 'Экспорт');
             chartData.addColumn('number', 'Импорт');
 
-            chartData.addRow([data[0].okpd, data[0].export_cost, data[0].import_cost]);
-
+            chartData.addRow([data[0][1].monthly_quarter, data[0][1].export_cost, data[0][1].import_cost]);
+            chartData.addRow([data[0][0].monthly_quarter, data[0][0].export_cost, data[0][0].import_cost]);
+            chartData.addRow([data[0][2].monthly_quarter, data[0][2].export_cost + data[0][0].export_cost, data[0][2].import_cost + data[0][0].import_cost]);
+            chartData.addRow([data[0][3].monthly_quarter, data[0][3].export_cost + data[0][2].export_cost + data[0][0].export_cost, data[0][3].import_cost + data[0][2].import_cost + data[0][0].import_cost]);
+            chartData.addRow([data[0][4].monthly_quarter,
+                              data[0][4].export_cost + data[0][3].export_cost + data[0][2].export_cost + data[0][0].export_cost,
+                              data[0][4].import_cost + data[0][3].import_cost + data[0][2].import_cost + data[0][0].import_cost]);
 
             const options = {
             title: 'Таможня',
@@ -155,7 +161,7 @@
               minValue: 0 // Начинать ось Y с 0
             }
             };
-            const chart = new google.visualization.BarChart(document.getElementById('chart_container_1'));
+            const chart = new google.visualization.ColumnChart(document.getElementById('chart_container_1'));
             chart.draw(chartData, options);
 
             const textItem = document.getElementById('text_chart_container_1');
@@ -163,8 +169,8 @@
             
             // Предполагаем, что в `data` есть свойства `name` и `value`
             list.innerHTML = `
-                <p>Экспорт - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0].export_cost)}</p>
-                <p>Импорт - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0].import_cost)}</p>
+                <p>Экспорт - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0][4].export_cost + data[0][3].export_cost + data[0][2].export_cost + data[0][0].export_cost)}</p>
+                <p>Импорт - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0][4].import_cost + data[0][3].import_cost + data[0][2].import_cost + data[0][0].import_cost)}</p>
             `;
         });
 
@@ -176,22 +182,28 @@
             chartData.addColumn('number', 'Стоимость');
             chartData.addColumn('number', 'Количество');
 
-            chartData.addRow([data[0].okpd, data[0].prom_cost, data[0].prom_quantity]);
+            chartData.addRow([data[0][1].monthly_quarter, data[0][1].prom_cost, data[0][1].prom_quantity]);
+            chartData.addRow([data[0][0].monthly_quarter, data[0][0].prom_cost, data[0][0].prom_quantity]);
+            chartData.addRow([data[0][2].monthly_quarter, data[0][2].prom_cost + data[0][0].prom_cost, data[0][2].prom_quantity + data[0][0].prom_quantity]);
+            chartData.addRow([data[0][3].monthly_quarter, data[0][3].prom_cost + data[0][2].prom_cost + data[0][0].prom_cost, data[0][3].prom_quantity + data[0][2].prom_quantity + data[0][0].prom_quantity]);
+            chartData.addRow([data[0][4].monthly_quarter,
+                              data[0][4].prom_cost + data[0][3].prom_cost + data[0][2].prom_cost + data[0][0].prom_cost,
+                              data[0][4].prom_quantity + data[0][3].prom_quantity + data[0][2].prom_quantity + data[0][0].prom_quantity]);
             const options = {
             title: 'Пром производство',
             hAxis: {
               minValue: 0 // Начинать ось Y с 0
             }
             };
-            const chart = new google.visualization.BarChart(document.getElementById('chart_container_2'));
+            const chart = new google.visualization.ColumnChart(document.getElementById('chart_container_2'));
             chart.draw(chartData, options);
             const textItem = document.getElementById('text_chart_container_2');
             const list = textItem.querySelector("ul");
             
             // Предполагаем, что в `data` есть свойства `name` и `value`
             list.innerHTML = `
-                <p>Пром стоимость - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0].prom_cost)}</p>
-                <p>Пром количество - ${data[0].prom_quantity}</p>
+                <p>Пром стоимость - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0][4].prom_cost + data[0][3].prom_cost + data[0][2].prom_cost + data[0][0].prom_cost)}</p>
+                <p>Пром количество - ${Intl.NumberFormat('ru-RU').format(data[0][4].prom_quantity + data[0][3].prom_quantity + data[0][2].prom_quantity + data[0][0].prom_quantity)}</p>
             `;
         });
 
@@ -204,7 +216,14 @@
             chartData.addColumn('number', 'Пром производство');
             chartData.addColumn('number', 'Объем рынка');
 
-            chartData.addRow([data[0].okpd, data[0].prom_cost, data[0].market_volume]);
+            //chartData.addRow([data[0].okpd, data[0].prom_cost, data[0].market_volume]);
+            chartData.addRow([data[0][1].monthly_quarter, data[0][1].prom_cost, data[0][1].market_volume]);
+            chartData.addRow([data[0][0].monthly_quarter, data[0][0].prom_cost, data[0][0].market_volume]);
+            chartData.addRow([data[0][2].monthly_quarter, data[0][2].prom_cost + data[0][0].prom_cost, data[0][2].market_volume + data[0][0].market_volume]);
+            chartData.addRow([data[0][3].monthly_quarter, data[0][3].prom_cost + data[0][2].prom_cost + data[0][0].prom_cost, data[0][3].market_volume + data[0][2].market_volume + data[0][0].market_volume]);
+            chartData.addRow([data[0][4].monthly_quarter,
+                              data[0][4].prom_cost + data[0][3].prom_cost + data[0][2].prom_cost + data[0][0].prom_cost,
+                              data[0][4].market_volume + data[0][3].market_volume + data[0][2].market_volume + data[0][0].market_volume]);
             const options = {
             title: 'Пром производство и объем рынка',
             hAxis: {
@@ -212,7 +231,7 @@
             }
             };
 
-            const chart = new google.visualization.BarChart(document.getElementById('chart_container_3'));
+            const chart = new google.visualization.ColumnChart(document.getElementById('chart_container_3'));
             chart.draw(chartData, options);
 
             const textItem = document.getElementById('text_chart_container_3');
@@ -220,8 +239,8 @@
             
             // Предполагаем, что в `data` есть свойства `name` и `value`
             list.innerHTML = `
-                <p>Пром стоимость - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0].prom_cost)}</p>
-                <p>Объем рынка - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0].market_volume)}</p>
+                <p>Пром стоимость - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0][4].prom_cost + data[0][3].prom_cost + data[0][2].prom_cost + data[0][0].prom_cost)}</p>
+                <p>Объем рынка - ${Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(data[0][4].market_volume + data[0][3].market_volume + data[0][2].market_volume + data[0][0].market_volume)}</p>
             `;
         });
 
