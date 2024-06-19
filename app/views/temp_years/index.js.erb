@@ -1,1 +1,2 @@
 $('#temp_years_table').html("<%= j render partial: 'temp_years_table', locals: { temp_years: @temp_years } %>"); 
+$('.pagination').replaceWith("<%= j paginate @temp_years, params: { monthly_quarter: params[:monthly_quarter], okpd: params[:okpd], critical: params[:critical] } %>");

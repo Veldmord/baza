@@ -26,9 +26,9 @@
         <td><%= temp_year.monthly_quarter %></td>
         <td><%= temp_year.critical %></td>
         <td><%= number_to_currency(temp_year.import_cost - temp_year.export_cost, unit: '', precision: 0) %></td>
-        <td><%= temp_year.part_op %></td>
-        <td><%= temp_year.dynamic_ip %></td>
-        <td><%= temp_year.dynamic_op %></td>
+        <td><%= number_to_percentage(temp_year.part_op.try(:*,100), precision: 2) %></td>
+        <td><%= number_to_percentage(temp_year.dynamic_ip.try(:*,100), precision: 2) %></td>
+        <td><%= number_to_percentage(temp_year.dynamic_op.try(:*,100), precision: 2) %></td>
         <td><%= number_to_currency(temp_year.sum_cost, unit: '', precision: 0) %></td>
         <td><%= temp_year.sum_quantity %></td>
         <td><%= number_to_currency(temp_year.export_cost, unit: '', precision: 0) %></td>

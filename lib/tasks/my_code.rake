@@ -79,4 +79,30 @@ namespace :my do
         end
         puts "Поле critical успешно обновлено для 9-значных окпд."
     end
+
+    task part_opip: :environment do 
+       # Используем хеш для хранения данных за 2022 год, чтобы избежать N+1 запросов
+        year_22_data = TempYear.where(okpd_rang: 9, monthly_quarter: "2022").index_by(&:okpd)
+
+        TempYear.where(okpd_rang: 9, monthly_quarter: "2023").find_each.each do |str|
+            # Получаем данные за 2022 год из хеша
+            year_22_record = year_22_data[str.okpd]
+
+            # Проверяем наличие данных за 2022 год для данного OKPD
+            if year_22_record && year_22_record.ip_cost != 0 && year_22_record.op_cost != 0
+                str.dynamic_ip = str.ip_cost.to_f / year_22_record.ip_cost.to_f - 1.0
+                str.dynamic_op = str.op_cost.to_f / year_22_record.op_cost.to_f - 1.0
+            else
+                # Обработка случаяs, когда данные за 2022 год отсутствуют
+                # Например, можно установить значения по умолчанию или 
+                # записать ошибку в лог
+                str.dynamic_ip = 0 
+                str.dynamic_op = 0
+            end
+
+            str.part_op = str.prom_cost.to_f/str.market_volume.to_f if str.market_volume != 0
+
+            str.save!
+        end
+    end
 end

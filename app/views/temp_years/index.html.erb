@@ -1,94 +1,104 @@
-<h1>Таблица TempYears</h1>
+<h1>Таблица критической продукции</h1>
 
-<div id="filters">
-  <%= form_tag(temp_years_path, method: :get) do %>
-    <div>
-      <%= label_tag :monthly_quarter, "Год:" %>
-      <%= select_tag :monthly_quarter, options_for_select(@years.unshift(""), params[:monthly_quarter]), include_blank: true%>
-    </div>
+<div class="card">
+  <div class="card-header mb-4">
+    Фильтры
+  </div>
+  <div class="card-body" id="filters">
+    <%= form_tag(temp_years_path, method: :get, data: { remote: true }, class: "form-inline") do %>
+      <div class="form-row align-items-end">  <%# Используем form-row для компактного отображения %>
+      <div class = "row">
+        <div class="form-group col-md-2 mb-2">
+          <%= label_tag :monthly_quarter, "Год:", class: "form-control-label" %>
+          <%= select_tag :monthly_quarter, options_for_select(@years.unshift(""), params[:monthly_quarter]), include_blank: true, class: "form-control" %>
+        </div>
+        <div class="form-group col-md-2 mb-2">
+          <%= label_tag :okpd, "OKPD:", class: "form-control-label" %>
+          <%= select_tag :okpd, options_for_select(@okpds.unshift(""), params[:okpd]), include_blank: true, class: "form-control" %>
+        </div>
+        <div class="form-group col-md-2 mb-2">
+          <%= label_tag :critical, "Критичность:", class: "form-control-label" %>
+          <%= select_tag :critical, options_for_select([["", ""], ["Да", true], ["Нет", false]], params[:critical]), include_blank: true, class: "form-control" %>
+        </div>
+        </div>
 
-    <div>
-      <%= label_tag :okpd, "OKPD:" %>
-      <%= select_tag :okpd, options_for_select(@okpds.unshift(""), params[:okpd]), include_blank: true %>
-    </div>
+        <%# Фильтр dynamic_ip %>
+        <div class="form-group col-md-3 mb-2">
+          <%= label_tag :dynamic_ip, "Динамика ИП (%):", class: "form-control-label" %>
+          <div class="input-group">
+            <%= number_field_tag :dynamic_ip_from, params[:dynamic_ip_from], class: "form-control", step: 1, placeholder: "от" %>
+            <div class="input-group-prepend input-group-append">
+              <span class="input-group-text">-</span>
+            </div>
+            <%= number_field_tag :dynamic_ip_to, params[:dynamic_ip_to], class: "form-control", step: 1, placeholder: "до" %>
+          </div>
+        </div>
 
-    <div>
-      <%= label_tag :critical, "Критичность:" %>
-      <%= select_tag :critical, options_for_select([["", ""], ["Да", true], ["Нет", false]], params[:critical]), include_blank: true %>
-    </div>
-  <% end %>
+        <%# Фильтр dynamic_op %>
+        <div class="form-group col-md-3 mb-2">
+          <%= label_tag :dynamic_op, "Динамика ОП (%):", class: "form-control-label" %>
+          <div class="input-group">
+            <%= number_field_tag :dynamic_op_from, params[:dynamic_op_from], class: "form-control",  step: 1, placeholder: "от" %>
+            <div class="input-group-prepend input-group-append">
+              <span class="input-group-text">-</span>
+            </div>
+            <%= number_field_tag :dynamic_op_to, params[:dynamic_op_to], class: "form-control",  step: 1, placeholder: "до" %>
+          </div>
+        </div>
+
+        <%# Фильтр part_op %>
+        <div class="form-group col-md-3 mb-2">
+          <%= label_tag :part_op, "Доля ОП (%):", class: "form-control-label" %>
+          <div class="input-group">
+            <%= number_field_tag :part_op_from, params[:part_op_from], class: "form-control",  step: 1, placeholder: "от" %>
+            <div class="input-group-prepend input-group-append">
+              <span class="input-group-text">-</span>
+            </div>
+            <%= number_field_tag :part_op_to, params[:part_op_to], class: "form-control",  step: 1, placeholder: "до" %>
+          </div>
+        </div>
+        <button class="btn btn-secondary float-right" id="clear-filters">Очистить фильтры</button>
+      </div> <%# Закрываем form-row %>
+    <% end %>
+  </div>
 </div>
 
 <div id="temp_years_table">
   <%= render partial: 'temp_years_table', locals: { temp_years: @temp_years } %>
 </div>
 
+<div class="mx-3 container">
+  <%= paginate @temp_years, 
+  params: { 
+    monthly_quarter: params[:monthly_quarter], 
+    okpd: params[:okpd], 
+    critical: params[:critical],
+    dynamic_ip_from: params[:dynamic_ip_from],
+    dynamic_ip_to: params[:dynamic_ip_to],
+    dynamic_op_from: params[:dynamic_op_from],
+    dynamic_op_to: params[:dynamic_op_to],
+    part_op_from: params[:part_op_from],
+    part_op_to: params[:part_op_to]
+  } 
+%>
+</div>
+
 <script>
   $(document).ready(function() {
-  $('#filters select').change(function() {
-    // Получаем значения всех фильтров
-    var monthlyQuarter = $('#monthly_quarter').val();
-    var okpd = $('#okpd').val();
-    var critical = $('#critical').val();
+    // Отслеживаем изменения в select элементах
+    $('#filters select, #filters input[type=number]').change(function() {
+      // Отправляем AJAX запрос при изменении любого select
+      $(this).closest('form').submit();
+    });
 
-    $.ajax({
-      url: '<%= temp_years_path %>', 
-      type: 'GET',
-      data: { 
-        monthly_quarter: monthlyQuarter, 
-        okpd: okpd, 
-        critical: critical 
-      }, 
-      dataType: 'script', 
-      success: function(data) {
-        // Обновляем таблицу и фильтры, как в предыдущем примере
-        $('#temp_years_table').html($(data).find('#temp_years_table').html());
+    // Обработка кнопки "Очистить фильтры"
+    $('#clear-filters').click(function() {
+      // Очищаем значения всех select и input[type=number]
+      $('#filters select').val('');
+      $('#filters input[type=number]').val('');
 
-        $('#filters select').each(function() {
-          var select = $(this);
-          var selectName = select.attr('name');
-          var selectedValue = select.val();
-          var newOptions = $(data).find('#filters select[name="' + selectName + '"]').html();
-          select.html(newOptions);
-          select.val(selectedValue);
-        });
-      }
+      // Отправляем AJAX запрос с очищенными фильтрами
+      $('#filters form').submit();
     });
   });
-});
-
-    $(document).ready(function() {
-  $('table thead th').each(function(columnIndex) {
-    var ascending = true; // Флаг для направления сортировки
-
-    $(this).click(function() {
-      var table = $(this).closest('table').eq(0);
-      var rows = table.find('tbody > tr').toArray().sort(function(a, b) {
-        var aVal = $(a).find('td').eq(columnIndex).text();
-        var bVal = $(b).find('td').eq(columnIndex).text();
-
-        // Обработка числовых значений:
-        if (!isNaN(aVal) && !isNaN(bVal)) {
-          aVal = parseFloat(aVal);
-          bVal = parseFloat(bVal);
-        }
-
-        // Сортировка в зависимости от направления:
-        if (ascending) {
-          return aVal.localeCompare(bVal, undefined, {numeric: true, sensitivity: 'base'}); 
-        } else {
-          return bVal.localeCompare(aVal, undefined, {numeric: true, sensitivity: 'base'}); 
-        }
-      });
-
-      // Изменение порядка строк в DOM:
-      $.each(rows, function(index, row) {
-        table.children('tbody').append(row);
-      });
-
-      // Изменяем направление сортировки:
-      ascending = !ascending;
-    });
-  });
-});
 </script>
