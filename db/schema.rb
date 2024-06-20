@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_14_114606) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_20_061601) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -33,6 +33,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_14_114606) do
     t.datetime "updated_at", null: false
     t.string "monthly_quarter"
     t.boolean "updated_row"
+    t.index ["TNVD"], name: "index_customs_on_TNVD"
+    t.index ["monthly_quarter", "TNVD"], name: "idx_customs_unique"
+    t.index ["monthly_quarter"], name: "index_customs_on_monthly_quarter"
   end
 
   create_table "functional_groups", force: :cascade do |t|
@@ -138,6 +141,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_14_114606) do
     t.datetime "updated_at", null: false
     t.string "monthly_quarter"
     t.boolean "updated_row"
+    t.index ["monthly_quarter", "okpd"], name: "idx_fz223s_unique"
+    t.index ["monthly_quarter"], name: "index_fz223s_on_monthly_quarter"
+    t.index ["okpd"], name: "index_fz223s_on_okpd"
   end
 
   create_table "fz44s", force: :cascade do |t|
@@ -163,6 +169,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_14_114606) do
     t.datetime "updated_at", null: false
     t.string "monthly_quarter"
     t.boolean "updated_row"
+    t.index ["monthly_quarter", "okpd"], name: "idx_fz44s_unique"
+    t.index ["monthly_quarter"], name: "index_fz44s_on_monthly_quarter"
+    t.index ["okpd"], name: "index_fz44s_on_okpd"
   end
 
   create_table "listokpds", force: :cascade do |t|
@@ -185,6 +194,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_14_114606) do
     t.string "ekb"
     t.string "thematically_fixed"
     t.integer "id_direction"
+    t.index ["id_direction"], name: "index_listokpds_on_id_direction"
+    t.index ["okpd_9"], name: "index_listokpds_on_okpd_9"
   end
 
   create_table "okpds", force: :cascade do |t|
@@ -198,6 +209,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_14_114606) do
     t.string "TNVD10Trans"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["OKPD9"], name: "index_okpds_on_OKPD9"
+    t.index ["TNVD10"], name: "index_okpds_on_TNVD10"
   end
 
   create_table "pp719s", force: :cascade do |t|
@@ -231,6 +244,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_14_114606) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "updated_row"
+    t.index ["monthly_quarter"], name: "index_proms_on_monthly_quarter"
+    t.index ["okpd"], name: "index_proms_on_okpd"
   end
 
   create_table "sum_directs", force: :cascade do |t|
@@ -255,6 +270,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_14_114606) do
     t.integer "id_direction"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["id_direction"], name: "index_sum_directs_on_id_direction"
+    t.index ["monthly_quarter"], name: "index_sum_directs_on_monthly_quarter"
+    t.index ["okpd"], name: "index_sum_directs_on_okpd"
   end
 
   create_table "tables", force: :cascade do |t|
@@ -293,6 +311,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_14_114606) do
     t.datetime "updated_at", null: false
     t.boolean "critical"
     t.integer "okpd_rang"
+    t.boolean "crit_value"
+    t.index ["critical"], name: "index_temp_years_on_critical"
+    t.index ["monthly_quarter"], name: "index_temp_years_on_monthly_quarter"
+    t.index ["okpd"], name: "index_temp_years_on_okpd"
   end
 
   create_table "temps", force: :cascade do |t|
@@ -321,6 +343,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_14_114606) do
     t.float "dynamic_ip"
     t.float "dynamic_op"
     t.index ["monthly_quarter", "okpd"], name: "idx_temp_unique", unique: true
+    t.index ["monthly_quarter"], name: "index_temps_on_monthly_quarter"
+    t.index ["okpd"], name: "index_temps_on_okpd"
   end
 
   create_table "users", force: :cascade do |t|

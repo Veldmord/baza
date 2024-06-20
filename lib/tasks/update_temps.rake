@@ -173,7 +173,7 @@ namespace :update_temps do
 
     task group_data: :environment do #main
         monthly_quarters = Temp.all.pluck(:monthly_quarter).uniq
-        okpds = Listokpd.where("okpd_9 Like ?", "27%").pluck(:okpd_9).uniq 
+        okpds = Listokpd.where("okpd_9 Like ?", "27%").pluck(:okpd_9).uniq #!!!!!! change
         all_combination = []
         
         okpds.each do |okpd|
