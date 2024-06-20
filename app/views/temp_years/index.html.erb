@@ -10,15 +10,15 @@
       <div class = "row">
         <div class="form-group col-md-2 mb-2">
           <%= label_tag :monthly_quarter, "Год:", class: "form-control-label" %>
-          <%= select_tag :monthly_quarter, options_for_select(@years.unshift(""), params[:monthly_quarter]), include_blank: true, class: "form-control" %>
+          <%= select_tag :monthly_quarter, options_for_select(@years, params[:monthly_quarter]), include_blank: true, class: "form-control" %>
         </div>
         <div class="form-group col-md-2 mb-2">
           <%= label_tag :okpd, "OKPD:", class: "form-control-label" %>
-          <%= select_tag :okpd, options_for_select(@okpds.unshift(""), params[:okpd]), include_blank: true, class: "form-control" %>
+          <%= select_tag :okpd, options_for_select(@okpds, params[:okpd]), include_blank: true, class: "form-control" %>
         </div>
         <div class="form-group col-md-2 mb-2">
           <%= label_tag :critical, "Критичность:", class: "form-control-label" %>
-          <%= select_tag :critical, options_for_select([["", ""], ["Да", true], ["Нет", false]], params[:critical]), include_blank: true, class: "form-control" %>
+          <%= select_tag :critical, options_for_select([["Да", true], ["Нет", false]], params[:critical]), include_blank: true, class: "form-control" %>
         </div>
         </div>
 

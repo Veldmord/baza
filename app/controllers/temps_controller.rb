@@ -141,6 +141,7 @@ class TempsController < ApplicationController
             { column.to_sym => group.pluck(column).compact.sum }
           end.reduce(:merge)
         end
+        #@data_okpd6 = TempYear.where(okpd_rang: 9, monthly_quarter: "2023").index_by(&:okpd)
         okpd_6_codes = @okpd6_list.pluck(:okpd_6)
         @okpd9_data = Listokpd.where(okpd_6: okpd_6_codes).group_by(&:okpd_6)
     end
