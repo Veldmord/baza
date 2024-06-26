@@ -1,6 +1,6 @@
 class AddIndex < ActiveRecord::Migration[7.0]
   def change
-    add_column :temp_years, :crit_value, :boolean
+    add_column :temp_years, :crit_value, :bigint
 
     add_index :customs, :monthly_quarter
     add_index :customs, :TNVD

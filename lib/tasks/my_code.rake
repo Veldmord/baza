@@ -74,13 +74,13 @@ namespace :my do
     desc "Рассчитывает критичность для 9-значных окпд и заполняет поле critical"
     task :calculate_criticality => :environment do
         TempYear.where(okpd_rang: 9).find_each do |record|
-            criticality = record.import_cost - record.export_cost
-            record.update_column(:critical, criticality > 1_000_000_000)
+            #criticality = record.import_cost - record.export_cost
+            record.update_column(:crit_value, record.import_cost - record.export_cost)
         end
         puts "Поле critical успешно обновлено для 9-значных окпд."
     end
 
-    task part_opip: :environment do 
+    task part_opip: :environment do #доля ОП и ИП 
        # Используем хеш для хранения данных за 2022 год, чтобы избежать N+1 запросов
         year_22_data = TempYear.where(okpd_rang: 9, monthly_quarter: "2022").index_by(&:okpd)
 

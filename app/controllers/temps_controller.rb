@@ -107,15 +107,16 @@ class TempsController < ApplicationController
 
     def dashboard
         filtered = []
-        columns = [:op_cost, :ip_cost, :sum_cost, :op_quantity, :ip_quantity, :sum_quantity, :export_cost, :export_quantity, :import_cost, :import_quantity, :prom_cost, :prom_quantity, :market_volume]
+        #columns = [:op_cost, :ip_cost, :sum_cost, :op_quantity, :ip_quantity, :sum_quantity, :export_cost, :export_quantity, :import_cost, :import_quantity, :prom_cost, :prom_quantity, :market_volume]
         okpd = params[:okpd] || "26.40"
-        quarter = params[:quarter] || [1,2,3,4]
-        year = params[:year] || "2023"
+        #quarter = params[:quarter] || [1,2,3,4]
+        #year = params[:year] || "2023"
         #temps = Temp.where(okpd: okpd, monthly_quarter: quarter.map { |q| "#{q}/#{year}" })
         temps = Temp.where(okpd: okpd)
 
+        @okpd_name = Listokpd.where(okpd_9: okpd).first
 
-
+        puts  @okpd_name.inspect
         #temp_data = columns.each_with_object({}) do |column, hash|
             # Заменяем nil на 0, чтобы избежать ошибки при суммировании
         #    hash[column] = temps.pluck(column).compact.sum #{ |value| value || 0 }

@@ -5,20 +5,27 @@
     Фильтры
   </div>
   <div class="card-body" id="filters">
-    <%= form_tag(temp_years_path, method: :get, data: { remote: true }, class: "form-inline") do %>
+    <%= form_tag(temp_years_path, method: :get, class: "form-inline") do %>
       <div class="form-row align-items-end">  <%# Используем form-row для компактного отображения %>
       <div class = "row">
         <div class="form-group col-md-2 mb-2">
           <%= label_tag :monthly_quarter, "Год:", class: "form-control-label" %>
           <%= select_tag :monthly_quarter, options_for_select(@years, params[:monthly_quarter]), include_blank: true, class: "form-control" %>
         </div>
-        <div class="form-group col-md-2 mb-2">
+        <div class="form-group col-md-3 mb-3">
           <%= label_tag :okpd, "OKPD:", class: "form-control-label" %>
           <%= select_tag :okpd, options_for_select(@okpds, params[:okpd]), include_blank: true, class: "form-control" %>
         </div>
         <div class="form-group col-md-2 mb-2">
           <%= label_tag :critical, "Критичность:", class: "form-control-label" %>
           <%= select_tag :critical, options_for_select([["Да", true], ["Нет", false]], params[:critical]), include_blank: true, class: "form-control" %>
+        </div>
+        <div class="form-group col-md-2 mb-2">
+          <%= label_tag :value_crit, "Знач. крит.", class: "form-control-label" %>
+          <%= text_field_tag :value_crit, params[:value_crit] || 1000000000, class: "form-control", placeholder: "1000000000" %>
+        </div>
+        <div class="col-md-2 mb-2">
+          <p>Кол. ОКПД 2:  <%= @count_okpd %></p>
         </div>
         </div>
 
@@ -57,6 +64,7 @@
             <%= number_field_tag :part_op_to, params[:part_op_to], class: "form-control",  step: 1, placeholder: "до" %>
           </div>
         </div>
+        <button class="btn btn-primary float-right" id="apply-filters">Применить фильтры</button>
         <button class="btn btn-secondary float-right" id="clear-filters">Очистить фильтры</button>
       </div> <%# Закрываем form-row %>
     <% end %>
@@ -73,6 +81,7 @@
     monthly_quarter: params[:monthly_quarter], 
     okpd: params[:okpd], 
     critical: params[:critical],
+    value_crit: params[:value_crit],
     dynamic_ip_from: params[:dynamic_ip_from],
     dynamic_ip_to: params[:dynamic_ip_to],
     dynamic_op_from: params[:dynamic_op_from],
@@ -86,10 +95,14 @@
 <script>
   $(document).ready(function() {
     // Отслеживаем изменения в select элементах
-    $('#filters select, #filters input[type=number]').change(function() {
+    $('#filters select, #filters text_field').change(function() {
       // Отправляем AJAX запрос при изменении любого select
       $(this).closest('form').submit();
     });
+
+     $('#apply-filterss').click(function() {
+      $(this).closest('form').submit();
+     });
 
     // Обработка кнопки "Очистить фильтры"
     $('#clear-filters').click(function() {

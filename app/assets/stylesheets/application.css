@@ -9,6 +9,10 @@
     width: 90%;
 }
 
+.center {
+    text-align: center;
+  }
+  
 .chart-section {
     width: 66.66%;
     display: flex;

@@ -2,6 +2,7 @@
   <thead>
     <tr>
       <th>ОКПД 2</th>
+      <th>Наименование ОКПД 2</th>
       <th>Год</th>
       <th>Критичность</th>
       <th>ИМ-ЭК, руб.</th>
@@ -23,9 +24,10 @@
     <% temp_years.each do |temp_year| %>
       <tr>
         <td><%= temp_year.okpd %></td>
+        <td><%= temp_year.name_okpd %></td>
         <td><%= temp_year.monthly_quarter %></td>
         <td><%= temp_year.critical %></td>
-        <td><%= number_to_currency(temp_year.import_cost - temp_year.export_cost, unit: '', precision: 0) %></td>
+        <td><%= number_to_currency(temp_year.crit_value, unit: '', precision: 0) %></td>
         <td><%= number_to_percentage(temp_year.part_op.try(:*,100), precision: 2) %></td>
         <td><%= number_to_percentage(temp_year.dynamic_ip.try(:*,100), precision: 2) %></td>
         <td><%= number_to_percentage(temp_year.dynamic_op.try(:*,100), precision: 2) %></td>
