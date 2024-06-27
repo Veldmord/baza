@@ -22,7 +22,7 @@
         </div>
         <div class="form-group col-md-2 mb-2">
           <%= label_tag :value_crit, "Знач. крит.", class: "form-control-label" %>
-          <%= text_field_tag :value_crit, params[:value_crit] || 1000000000, class: "form-control", placeholder: "1000000000" %>
+          <%= text_field_tag :value_crit, number_with_delimiter(params[:value_crit] || 1000000000), class: "form-control"%>
         </div>
         <div class="col-md-2 mb-2">
           <p>Кол. ОКПД 2:  <%= @count_okpd %></p>
