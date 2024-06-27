@@ -1,23 +1,23 @@
 <table class="table table-striped table-bordered table-hover">
   <thead>
     <tr>
-      <th>ОКПД 2</th>
-      <th>Наименование ОКПД 2</th>
-      <th>Год</th>
-      <th>Критичность</th>
-      <th>ИМ-ЭК, руб.</th>
-      <th>Доля ОП</th>
-      <th>Динамика ИП</th>
-      <th>Динамика ОП</th>
-      <th>Стоимость по ФЗ</th>
-      <th>Количество оп ФЗ</th>
-      <th>Экспорт стоимость</th>
-      <th>Импорт стоимость</th>
-      <th>Пром стоимость</th>
-      <th>Пром количесвтво</th>
-      <th>КТУ</th>
-      <th>КТУ/Цена</th>
-      <th>Объем рынка</th>
+      <th><%= sort_link(@q, :okpd, "ОКПД 2") %></th>
+      <th><%= sort_link(@q, :name_okpd, "Наименование ОКПД 2") %></th>
+      <th><%= sort_link(@q, :monthly_quarter, "Год") %></th>
+      <th><%= sort_link(@q, :critical, "Критичность") %></th>
+      <th><%= sort_link(@q, :crit_value, "ИМ-ЭК, руб.") %></th>
+      <th><%= sort_link(@q, :part_op, "Доля ОП") %></th>
+      <th><%= sort_link(@q, :dynamic_ip, "Динамика ИП") %></th>
+      <th><%= sort_link(@q, :dynamic_op, "Динамика ОП") %></th>
+      <th><%= sort_link(@q, :sum_cost, "Стоимость по ФЗ") %></th>
+      <th><%= sort_link(@q, :sum_quantity, "Количество оп ФЗ") %></th>
+      <th><%= sort_link(@q, :export_cost, "Экспорт стоимость") %></th>
+      <th><%= sort_link(@q, :import_cost, "Импорт стоимость") %></th>
+      <th><%= sort_link(@q, :prom_cost, "Пром стоимость") %></th>
+      <th><%= sort_link(@q, :prom_quantity, "Пром количество") %></th>
+      <th><%= sort_link(@q, :kty, "КТУ") %></th>
+      <th><%= sort_link(@q, :kty_cost, "КТУ/Цена") %></th>
+      <th><%= sort_link(@q, :market_volume, "Объем рынка") %></th>
     </tr>
   </thead>
   <tbody>
@@ -44,5 +44,3 @@
     <% end %>
   </tbody>
 </table>
-
-

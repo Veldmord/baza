@@ -87,7 +87,9 @@
     dynamic_op_from: params[:dynamic_op_from],
     dynamic_op_to: params[:dynamic_op_to],
     part_op_from: params[:part_op_from],
-    part_op_to: params[:part_op_to]
+    part_op_to: params[:part_op_to],
+    sort_column: params[:sort_column],
+    sort_direction: params[:sort_direction]
   } 
 %>
 </div>
@@ -113,5 +115,6 @@
       // Отправляем AJAX запрос с очищенными фильтрами
       $('#filters form').submit();
     });
+
   });
 </script>

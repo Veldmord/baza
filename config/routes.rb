@@ -56,6 +56,12 @@ Rails.application.routes.draw do
     post :upload, on: :collection
   end
 
+  resources :temp_years do
+    collection do
+      match 'search' => 'temp_years#index', via: [:get, :post], as: :search
+    end
+  end
+  
   resources :temp_years
   resources :product_directions
   resources :temps
