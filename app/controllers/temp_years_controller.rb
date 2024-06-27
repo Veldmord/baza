@@ -5,7 +5,7 @@ class TempYearsController < ApplicationController
         
         # Фильтры
         @temp_years = @temp_years.where(monthly_quarter: params[:monthly_quarter]) if params[:monthly_quarter].present?
-        @temp_years = @temp_years.where(okpd: params[:okpd]) if params[:okpd].present?
+        @temp_years = @temp_years.where("okpd Like ?", "#{params[:okpd]}%") if params[:okpd].present?
         @temp_years = @temp_years.where('dynamic_ip >= ?', params[:dynamic_ip_from].to_f / 100) if params[:dynamic_ip_from].present?
         @temp_years = @temp_years.where('dynamic_ip <= ?', params[:dynamic_ip_to].to_f / 100) if params[:dynamic_ip_to].present?
         @temp_years = @temp_years.where('dynamic_op >= ?', params[:dynamic_op_from].to_f / 100) if params[:dynamic_op_from].present?

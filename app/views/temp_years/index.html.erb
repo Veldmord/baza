@@ -14,7 +14,7 @@
         </div>
         <div class="form-group col-md-3 mb-3">
           <%= label_tag :okpd, "OKPD:", class: "form-control-label" %>
-          <%= select_tag :okpd, options_for_select(@okpds, params[:okpd]), include_blank: true, class: "form-control" %>
+          <%= text_field_tag :okpd, params[:okpd], class: "form-control" %>
         </div>
         <div class="form-group col-md-2 mb-2">
           <%= label_tag :critical, "Критичность:", class: "form-control-label" %>
